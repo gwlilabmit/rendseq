@@ -5,7 +5,7 @@ import sys
 import warnings
 from os.path import abspath
 
-from numpy import mean, std, zeros
+from numpy import mean, nan, std, zeros
 
 from rendseq.file_funcs import make_new_dir, open_wig, validate_reads, write_wig
 
@@ -40,7 +40,9 @@ def _z_score(val, v_mean, v_std):
 
     NOTE: The z_score() of a constant vector is 0
     """
-    return 0 if v_std == 0 else (val - v_mean) / v_std
+    if v_std in [0, nan]:
+        return 0 if v_mean != nan and v_mean == val else (val - v_mean) / 0.5
+    return (val - v_mean) / v_std
 
 
 def _remove_outliers(vals):
@@ -81,9 +83,7 @@ def _calc_score(vals, min_r, cur_val):
     if sum(vals + cur_val) > min_r:
         v_mean = mean(vals)
         v_std = std(vals)
-        if v_std == 0:
-            return 0 if v_mean == cur_val else (cur_val - v_mean) / 0.5
-        return (cur_val - v_mean) / v_std
+        return _z_score(cur_val, v_mean, v_std)
 
     return None
 
