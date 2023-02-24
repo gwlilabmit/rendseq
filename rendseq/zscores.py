@@ -29,9 +29,7 @@ def _adjust_up(cur_ind, target_val, reads):
 
     cur_ind = min(max(cur_ind, 0), len(reads))
 
-    while reads[cur_ind, 0] < target_val:
-        if cur_ind >= len(reads) - 1:
-            break
+    while reads[cur_ind, 0] < target_val and not cur_ind >= len(reads) - 1:
         cur_ind += 1
 
     return cur_ind
@@ -42,8 +40,7 @@ def _z_score(val, v_mean, v_std):
 
     NOTE: The z_score() of a constant vector is 0
     """
-    score = 0 if v_std == 0 else (val - v_mean) / v_std
-    return score
+    return 0 if v_std == 0 else (val - v_mean) / v_std
 
 
 def _remove_outliers(vals):
@@ -81,14 +78,14 @@ def _calc_score(vals, min_r, cur_val):
     -------
         -score: the zscore for the current value, or None if insufficent reads
     """
-    score = None
     if sum(vals + cur_val) > min_r:
         v_mean = mean(vals)
         v_std = std(vals)
+        if v_std == 0:
+            return 0 if v_mean == cur_val else (cur_val - v_mean) / 0.5
+        return (cur_val - v_mean) / v_std
 
-        score = _z_score(cur_val, v_mean, v_std)
-
-    return score
+    return None
 
 
 def score_helper(start, stop, min_r, reads, i):
@@ -100,7 +97,7 @@ def score_helper(start, stop, min_r, reads, i):
     return _calc_score(reads_outlierless, min_r, reads[i, 1])
 
 
-def validate_gap_window(gap, w_sz):
+def _validate_gap_window(gap, w_sz):
     """Check that gap and window size are reasonable in r/l_score_helper."""
     if w_sz < 1:
         raise ValueError("Window size must be larger than 1 to find a z-score")
@@ -112,7 +109,7 @@ def validate_gap_window(gap, w_sz):
 
 def _l_score_helper(gap, w_sz, min_r, reads, i):
     """Find the z_score based on reads to the left of the current pos."""
-    validate_gap_window(gap, w_sz)
+    _validate_gap_window(gap, w_sz)
     l_start = _adjust_up(i - (gap + w_sz), reads[i, 0] - (gap + w_sz), reads)
     l_stop = _adjust_up(i - gap, reads[i, 0] - gap, reads)
     return score_helper(l_start, l_stop, min_r, reads, i)
@@ -120,7 +117,7 @@ def _l_score_helper(gap, w_sz, min_r, reads, i):
 
 def _r_score_helper(gap, w_sz, min_r, reads, i):
     """Find the z_score based on reads to the right of the current pos."""
-    validate_gap_window(gap, w_sz)
+    _validate_gap_window(gap, w_sz)
     r_start = _adjust_down(i + gap, reads[i, 0] + gap, reads)
     r_stop = _adjust_down(i + gap + w_sz, reads[i, 0] + gap + w_sz, reads)
     return score_helper(r_start, r_stop, min_r, reads, i)
@@ -166,16 +163,14 @@ def z_scores(reads, gap=5, w_sz=50, min_r=20):
         # set the zscore to be the smaller valid score of the left/right scores
         # If neither score is valid, Z-score is 0
         z_score[i_score_pos, 1] = 0
-        if l_score is not None:
-            if r_score is not None:
-                z_score[i_score_pos, 1] = (
-                    r_score if abs(r_score) < abs(l_score) else l_score
-                )
-            else:
-                z_score[i_score_pos, 1] = l_score
-
-        elif r_score is not None:
+        if l_score and r_score:
+            z_score[i_score_pos, 1] = (
+                r_score if abs(r_score) < abs(l_score) else l_score
+            )
+        elif r_score and l_score is None:
             z_score[i_score_pos, 1] = r_score
+        elif l_score and r_score is None:
+            z_score[i_score_pos, 1] = l_score
 
     return z_score
 
