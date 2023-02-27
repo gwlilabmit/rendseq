@@ -85,7 +85,7 @@ def _calc_score(vals, min_r, cur_val):
         v_std = std(vals)
         return _z_score(cur_val, v_mean, v_std)
 
-    return None
+    return cur_val
 
 
 def score_helper(start, stop, min_r, reads, i):
@@ -165,12 +165,12 @@ def z_scores(reads, gap=5, w_sz=50, min_r=20):
         z_score[i_score_pos, 1] = 0
         if l_score and r_score:
             z_score[i_score_pos, 1] = (
-                r_score if abs(r_score) < abs(l_score) else l_score
+                min(12, r_score) if abs(r_score) < abs(l_score) else min(12, l_score)
             )
         elif r_score and l_score is None:
-            z_score[i_score_pos, 1] = r_score
+            z_score[i_score_pos, 1] = min(12, r_score)
         elif l_score and r_score is None:
-            z_score[i_score_pos, 1] = l_score
+            z_score[i_score_pos, 1] = min(12, l_score)
 
     return z_score
 
