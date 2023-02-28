@@ -89,7 +89,9 @@ def _validate_gap_window(gap, w_sz):
     if gap < 0:
         raise ValueError("Gap size must be at least zero to find a z-score")
     if gap == 0:
-        warnings.warn("Warning...a gap size of 0 includes the current position.")
+        warnings.warn(
+            "Warning...a gap size of 0 includes the current position.", stacklevel=2
+        )
 
 
 def z_scores(reads, gap=5, w_sz=50):
