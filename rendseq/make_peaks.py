@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 """Take normalized raw data find the peaks in it."""
 
-import argparse
-import sys
 import warnings
-from os.path import abspath
 
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.stats import norm
-
-from rendseq.file_funcs import make_new_dir, open_wig, write_wig
 
 
 def _populate_trans_mat(z_scores, peak_center, spread, trans_m, states):
@@ -207,55 +202,3 @@ def thresh_peaks(z_scores, thresh=None, method="kink"):
     peaks[:, 0] = z_scores[:, 0]
     peaks[:, 1] = (z_scores[:, 1] > thresh).astype(int)
     return peaks
-
-
-def parse_args_make_peaks(args):
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Can run from the\
-                                        commmand line.  Please pass a \
-                                        zscore file and select a method \
-                                        for peak fitting."
-    )
-    parser.add_argument("filename", help="Location of the zscore file")
-    parser.add_argument(
-        "method",
-        help='User must pass the desired peak\
-                                        fitting method.  Choose "thesh" \
-                                        or "hmm"',
-    )
-    parser.add_argument(
-        "--save_file",
-        help="Save the z_scores file as a new\
-                                        wig file in addition to returning the\
-                                        z_scores.  Default = True",
-        default=True,
-    )
-    return parser.parse_args(args)
-
-
-def main_make_peaks():
-    """Run the main peak making from command line."""
-    args = parse_args_make_peaks(sys.argv[1:])
-    filename = args.filename
-    z_scores, chrom = open_wig(filename)
-    if args.method == "thresh":
-        print(f"Using the thresholding method to find peaks for {filename}")
-        peaks = thresh_peaks(z_scores)
-    elif args.method == "hmm":
-        print(f"Using the hmm method to find peaks for {filename}")
-        peaks = hmm_peaks(z_scores)
-    else:
-        raise ValueError("{args.method} is not a valid peak finding method, see --help")
-    if args.save_file:
-        filename = abspath(filename).replace("\\", "/")
-        file_loc = filename[: filename.rfind("/")]
-        peak_dir = make_new_dir([file_loc, "/Peaks/"])
-        file_start = filename[filename.rfind("/") + 1 : filename.rfind(".wig")]
-        peak_file = "".join([peak_dir, file_start, "_peaks.wig"])
-        write_wig(peaks, peak_file, chrom)
-        print(f"Wrote peaks to {peak_file}")
-
-
-if __name__ == "__main__":
-    main_make_peaks()
