@@ -134,9 +134,7 @@ def z_scores(reads, gap=5, w_sz=50):
         i_score_pos = i - (gap + w_sz)
 
         # set the zscore to be the smaller valid score of the left/right scores.
-        z_scores[i_score_pos, 1] = (
-            min(12, r_score) if abs(r_score) < abs(l_score) else min(12, l_score)
-        )
+        z_scores[i_score_pos, 1] = r_score if abs(r_score) < abs(l_score) else l_score
 
     return z_scores
 
