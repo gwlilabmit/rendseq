@@ -8,7 +8,7 @@ from numpy import asarray, delete, where
 from pandas import read_csv
 
 
-def validate_reads(reads):
+def _validate_reads(reads):
     """Make sure the given reads meet our format requirements.
 
     Parameters
@@ -48,7 +48,7 @@ def write_wig(wig_track, wig_file_name, chrom_name):
         - wig_track (required) - the wig data you wish to write (in 2xn array)
         - wig_file_name (string) - the new file you will write to
     """
-    validate_reads(wig_track)
+    _validate_reads(wig_track)
     d_inds = where(wig_track[:, 0] < 1)
     wig_track = delete(wig_track, d_inds, axis=0)
     with open(wig_file_name, "w+", encoding="utf-8") as wig_file:
@@ -83,7 +83,7 @@ def open_wig(filename):
         chrom = line[line.rfind("=") + 1 :].rstrip()
     # next we read all the wig file data and return that if it's valid:
     reads = asarray(read_csv(filename, sep="\t", header=1, names=["bp", "count"]))
-    validate_reads(reads)
+    _validate_reads(reads)
     return reads, chrom
 
 
