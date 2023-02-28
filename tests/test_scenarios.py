@@ -26,7 +26,7 @@ def step_up_peak():
             )
         ]
     )
-    peak = [[step_noise_len + 1, 40]]
+    peak = [[step_noise_len + 1, 1000]]
     internal = array(
         [
             [loc, int(z)]
@@ -51,7 +51,7 @@ def step_down_peak():
             )
         ]
     )
-    peak = [[step_internal_len + 1, 100]]
+    peak = [[step_internal_len + 1, 1000]]
     noise = array(
         [
             [loc, int(z)]
