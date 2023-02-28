@@ -4,7 +4,7 @@ import sys
 import pytest
 from mock import patch
 from numpy import array, concatenate, mean, std
-from numpy.random import normal
+from numpy.random import normal, seed
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from rendseq.make_peaks import thresh_peaks
@@ -17,6 +17,7 @@ step_internal_len = 100
 @pytest.fixture
 def step_up_peak():
     """Make a data array that steps up from the noise floor with peak."""
+    seed(43)
     noise = array(
         [
             [loc, int(z)]
@@ -42,6 +43,7 @@ def step_up_peak():
 @pytest.fixture
 def step_down_peak():
     """Make a data array that steps up from the noise floor with peak."""
+    seed(43)
     internal = array(
         [
             [loc, int(z)]
