@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """Functions needed for z-score transforming raw rendSeq data."""
-import argparse
-import sys
 import warnings
-from os.path import abspath
 
 from numpy import mean, std, zeros
 
-from rendseq.file_funcs import make_new_dir, open_wig, validate_reads, write_wig
+from rendseq.file_funcs import validate_reads
 
 
 def _adjust_down(cur_ind, target_val, reads):
@@ -178,95 +175,3 @@ def z_scores(reads, gap=5, w_sz=50, min_r=20):
             z_score[i_score_pos, 1] = r_score
 
     return z_score
-
-
-def parse_args_zscores(args):
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Takes raw read file and\
-                                        makes a modified z-score for each\
-                                        position. Takes several optional\
-                                        arguments"
-    )
-    parser.add_argument(
-        "filename",
-        help="Location of the raw_reads file that\
-                                        will be processed using this function.\
-                                        Should be a properly formatted wig\
-                                        file.",
-    )
-    parser.add_argument(
-        "--gap",
-        help="gap (interger):   number of reads\
-                                        surround the current read of interest\
-                                        that should be excluded in the z_score\
-                                        calculation. Defaults to 5.",
-        default=5,
-    )
-    parser.add_argument(
-        "--w_sz",
-        help="w_sz (integer): the max dis (in nt)\
-                                        away from the current position one\
-                                        should include in zscore calulcation.\
-                                        Default to 50.",
-        default=50,
-    )
-    parser.add_argument(
-        "--min_r",
-        help="min_r (integer): density threshold.\
-                                        If there are less than this number of\
-                                        reads going into the z_score\
-                                        calculation for a point that point is\
-                                        excluded.  note this is sum of reads in\
-                                        the window.  Default is 20",
-        default=20,
-    )
-    parser.add_argument(
-        "--save_file",
-        help="Save the z_scores file as a new\
-                                        wig file in addition to returning the\
-                                        z_scores.  Default = True",
-        default=True,
-    )
-    return parser.parse_args(args)
-
-
-def main_zscores():
-    """Run Z-score calculations.
-
-    Effect: Writes messages to standard out. If --save-file flag,
-    also writes output to disk.
-    """
-    args = parse_args_zscores(sys.argv[1:])
-
-    # Calculate z-scores
-    filename = args.filename
-    print(f"Calculating zscores for file {filename}.")
-    reads, chrom = open_wig(filename)
-    z_score = z_scores(
-        reads, gap=int(args.gap), w_sz=int(args.w_sz), min_r=int(args.min_r)
-    )
-
-    # Save file, if applicable
-    if args.save_file:
-        filename = abspath(filename).replace("\\", "/")
-        file_loc = filename[: filename.rfind("/")]
-        z_score_dir = make_new_dir([file_loc, "/Z_scores"])
-        file_start = filename[filename.rfind("/") : filename.rfind(".")]
-        z_score_file = "".join([z_score_dir, file_start, "_zscores.wig"])
-        write_wig(z_score, z_score_file, chrom)
-        print(f"Wrote z_scores to {z_score_file}")
-
-    print(
-        "\n".join(
-            [
-                f"Ran zscores.py with the following settings:",
-                f"gap: {args.gap}, w_sz: {args.w_sz},",
-                f"min_r: {args.min_r}, file_name: {args.filename}",
-            ]
-        )
-    )
-
-
-if __name__ == "__main__":
-    main_zscores()
