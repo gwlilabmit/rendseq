@@ -19,7 +19,7 @@ def step_up_peak():
     """Make a data array that steps up from the noise floor with peak."""
     noise = array(
         [
-            [loc, z]
+            [loc, int(z)]
             for loc, z in zip(
                 range(1, step_noise_len + 1),
                 normal(0, 0.2, size=(1, step_noise_len))[0],
@@ -29,7 +29,7 @@ def step_up_peak():
     peak = [[step_noise_len + 1, 40]]
     internal = array(
         [
-            [loc, z]
+            [loc, int(z)]
             for loc, z in zip(
                 range(step_noise_len + 2, step_noise_len + step_internal_len),
                 normal(5, 2, size=(1, step_internal_len))[0],
@@ -44,7 +44,7 @@ def step_down_peak():
     """Make a data array that steps up from the noise floor with peak."""
     internal = array(
         [
-            [loc, z]
+            [loc, int(z)]
             for loc, z in zip(
                 range(1, step_internal_len + 1),
                 normal(5, 2, size=(1, step_internal_len))[0],
@@ -54,7 +54,7 @@ def step_down_peak():
     peak = [[step_internal_len + 1, 100]]
     noise = array(
         [
-            [loc, z]
+            [loc, int(z)]
             for loc, z in zip(
                 range(step_internal_len + 2, step_noise_len + step_internal_len),
                 normal(5, 2, size=(1, step_noise_len))[0],
