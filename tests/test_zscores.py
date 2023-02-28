@@ -3,7 +3,7 @@ import sys
 
 import pytest
 from mock import patch
-from numpy import append, array, mean, std
+from numpy import append, array
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from rendseq.file_funcs import write_wig
@@ -68,7 +68,7 @@ class TestMainAndParseArgsZscore:
         # Run main with regular arguments
         with patch.object(sys, "argv", regular_argslist):
             main_zscores()
-            out, err = capfd.readouterr()
+            out, _ = capfd.readouterr()
 
         # Expect output
         assert out == "\n".join(
@@ -175,10 +175,7 @@ class TestValidateGapWindow:
 
     def test_window_gap_positive(self):
         """Windows and gaps can be positive"""
-        try:
-            _validate_gap_window(100, 1)
-        except Exception as e:
-            pytest.fail(f"Unexpected exception: {e}")
+        _validate_gap_window(100, 1)
 
     def test_gap_negative(self):
         """Gaps can't be negative"""
@@ -195,7 +192,7 @@ class TestValidateGapWindow:
             _validate_gap_window(0, 100)
 
 
-class TestZScore:
+class TestCalcZScore:
     def test_z_score_normal(self, reads):
         """Run-of-the-mill zscore"""
         vals = reads[:, 1:]
