@@ -4,28 +4,28 @@ from mock import patch
 from numpy import array
 from numpy.testing import assert_array_equal
 
-from rendseq.file_funcs import make_new_dir, open_wig, validate_reads, write_wig
+from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wig
 
 
 class TestValidateReads:
     def test_correct(self):
         """validate a correct read array"""
         try:
-            validate_reads(array([[1, 2], [3, 4]]))
+            _validate_reads(array([[1, 2], [3, 4]]))
         except Exception as e:
             assert False, f"validate_reads invalid exception: {e}"
 
     def test_incorrect_dim(self):
         """read array has too many columns"""
         with pytest.raises(ValueError) as e_info:
-            validate_reads(array([[1, 2, 3], [4, 5, 6]]))
+            _validate_reads(array([[1, 2, 3], [4, 5, 6]]))
 
         assert e_info.value.args[0] == "reads must be (n,2), not (2, 3)"
 
     def test_incorrect_type(self):
         """read array isn't actually an array"""
         with pytest.raises(ValueError) as e_info:
-            validate_reads([1, 2, 3])
+            _validate_reads([1, 2, 3])
 
         assert e_info.value.args[0] == "reads must be numpy array, not <class 'list'>"
 
