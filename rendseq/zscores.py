@@ -12,7 +12,7 @@ from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wi
 
 
 def _get_lower_reads(cur_ind, target_start, target_stop, reads):
-    """Calculate the lower reads index in range for the z-score calculation."""
+    """Calculate the padded lower reads index in range for the z-score calculation."""
     cur_ind = max(min(cur_ind, len(reads) - 1), 0)
     vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
     ind = 0
@@ -24,7 +24,7 @@ def _get_lower_reads(cur_ind, target_start, target_stop, reads):
 
 
 def _get_upper_reads(cur_ind, target_start, target_stop, reads):
-    """Fetch the upper reads needed for z score calculation with zero padding."""
+    """Fetch the padded upper reads needed for z score calculation with zero padding."""
     cur_ind = min(max(cur_ind, 0), len(reads) - 1)
 
     vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
