@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="rendseq",
-    version="0.1.7",
+    version="0.1.8",
     description="Package for RendSeq Data Analysis",
     long_description=long_description,
     long_description_content_type="text/markdown",
