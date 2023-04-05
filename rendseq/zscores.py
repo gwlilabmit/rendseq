@@ -5,6 +5,7 @@ import sys
 import warnings
 from os.path import abspath
 
+import numpy as np
 from numpy import mean, nan, std, zeros
 
 from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wig
@@ -13,33 +14,25 @@ from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wi
 def _get_lower_reads(cur_ind, target_start, target_stop, reads):
     """Calculate the lower reads index in range for the z-score calculation."""
     cur_ind = max(min(cur_ind, len(reads) - 1), 0)
-    start_ind = cur_ind
-    vals = [0 for _ in range(int(reads[cur_ind, 0] - target_start - 1))]
+    vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
+    ind = 0
     while cur_ind >= 0 and reads[cur_ind, 0] >= target_stop:
-        if cur_ind != start_ind:
-            vals.extend(
-                0 for _ in range(int(reads[cur_ind, 0] - reads[cur_ind - 1, 0] - 1))
-            )
-        vals.append(reads[cur_ind, 1])
+        vals[ind] = reads[cur_ind, 1]
         cur_ind -= 1
-
+        ind += 1
     return vals
 
 
 def _get_upper_reads(cur_ind, target_start, target_stop, reads):
     """Fetch the upper reads needed for z score calculation with zero padding."""
     cur_ind = min(max(cur_ind, 0), len(reads) - 1)
-    start_ind = cur_ind
-    vals = [0 for _ in range(int(reads[cur_ind, 0] - target_start - 1))]
 
+    vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
+    ind = 0
     while reads[cur_ind, 0] < target_stop and not cur_ind >= len(reads) - 1:
-        if cur_ind != start_ind:
-            vals.extend(
-                0 for _ in range(int(reads[cur_ind, 0] - reads[cur_ind - 1, 0] - 1))
-            )
-        vals.append(reads[cur_ind, 1])
+        vals[ind] = reads[cur_ind, 1]
+        ind += 1
         cur_ind += 1
-
     return vals
 
 
@@ -121,22 +114,25 @@ def z_scores(reads, gap=5, w_sz=50):
     # Iterate through each valid read, recording z-score
     for i in range((gap + w_sz + 1), (len(reads) - (gap + w_sz))):
         # calculate the z score with values from the left:
-        l_vals = _get_upper_reads(
-            i + gap, reads[i, 0] + gap, reads[i, 0] + gap + w_sz, reads
-        )
-        l_score = _calc_z_score(_remove_outliers(l_vals), reads[i, 1])
-
-        # calculate z score with reads from the right:
-        r_vals = _get_lower_reads(
-            i - gap, reads[i, 0] - gap, reads[i, 0] - gap - w_sz, reads
-        )
-        r_score = _calc_z_score(_remove_outliers(r_vals), reads[i, 1])
-
-        # The location in which this z-score should go into the final array
         i_score_pos = i - (gap + w_sz)
+        if reads[i, 1] > 5:
+            l_vals = _get_upper_reads(
+                i + gap, reads[i, 0] + gap, reads[i, 0] + gap + w_sz, reads
+            )
+            l_score = _calc_z_score(_remove_outliers(l_vals), reads[i, 1])
 
-        # set the zscore to be the smaller valid score of the left/right scores.
-        z_scores[i_score_pos, 1] = r_score if abs(r_score) < abs(l_score) else l_score
+            # calculate z score with reads from the right:
+            r_vals = _get_lower_reads(
+                i - gap, reads[i, 0] - gap, reads[i, 0] - gap - w_sz, reads
+            )
+            r_score = _calc_z_score(_remove_outliers(r_vals), reads[i, 1])
+
+            # set the zscore to be the smaller valid score of the left/right scores.
+            z_scores[i_score_pos, 1] = (
+                r_score if abs(r_score) < abs(l_score) else l_score
+            )
+        else:
+            z_scores[i_score_pos, 1] = 1
 
     return z_scores
 
