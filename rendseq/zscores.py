@@ -6,78 +6,37 @@ import warnings
 from os.path import abspath
 
 import numpy as np
-from numpy import mean, nan, std, zeros
 
 from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wig
 
 
-def _get_lower_reads(cur_ind, target_start, target_stop, reads):
-    """Calculate the padded lower reads index in range for the z-score calculation."""
-    cur_ind = max(min(cur_ind, len(reads) - 1), 0)
-    vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
-    ind = 0
-    while cur_ind >= 0 and reads[cur_ind, 0] >= target_stop:
-        vals[ind] = reads[cur_ind, 1]
-        cur_ind -= 1
-        ind += 1
-    return vals
+def _add_padding(reads, gap, w_sz):
+    """Add gaussian padding to the parts of the original array missing values."""
+    start = reads[0, 0] - gap - w_sz
+    stop = reads[-1, 0] + gap + w_sz
+    padded_reads = np.zeros([stop - start, 2])
+    padded_reads[:, 0] = list(range(start, stop))
+    padded_reads[:, 1] = np.random.normal(0, 1, stop - start)
+    padded_reads[(reads[:, 0] - reads[0, 0] + gap + w_sz), 1] = reads[:, 1]
+    return padded_reads
 
 
-def _get_upper_reads(cur_ind, target_start, target_stop, reads):
-    """Fetch the padded upper reads needed for z score calculation with zero padding."""
-    cur_ind = min(max(cur_ind, 0), len(reads) - 1)
+def _get_means_sds(reads, w_sz):
+    """Calculate the arrays of mean and sd of tiled windows along data."""
+    sliding_windows = np.sort(
+        np.lib.stride_tricks.sliding_window_view(reads[:, 1], w_sz), axis=1
+    )[
+        :, : int(w_sz * 0.8)
+    ]  # Note - remove the to ~20% of values (other peaks?)
+    means = np.mean(sliding_windows, axis=1)
+    sds = np.std(sliding_windows, axis=1)
 
-    vals = np.random.normal(0, 1, [abs(target_stop - target_start) + 1, 1])
-    ind = 0
-    while reads[cur_ind, 0] < target_stop and not cur_ind >= len(reads) - 1:
-        vals[ind] = reads[cur_ind, 1]
-        ind += 1
-        cur_ind += 1
-    return vals
-
-
-def _calc_z_score(vals, calc_val):
-    """Calculate a z-score given a value, mean, and standard deviation.
-
-    vals = values to calculate the z score with respect to.
-    calc_val = value to calculate z score for.
-
-    NOTE: The z_score() of a constant vector is 0
-    """
-    v_std = std(vals)
-    v_mean = mean(vals)
-    if nan in [v_mean, v_std]:
-        return calc_val
-    if v_std == 0:
-        return 0 if v_mean == calc_val else (calc_val - v_mean) / 0.2
-    return (calc_val - v_mean) / v_std
-
-
-def _remove_outliers(vals, method="remove_by_std"):
-    """Normalize window of reads by removing outliers (values 2.5 std > mean).
-
-    Parameters
-    ----------
-        -vals: an array of raw read values to be processed
-
-    Returns
-    -------
-        -new_v: another array of raw values which has had the extreme values
-            removed.
-    """
-    normalized_vals = vals
-
-    if method == "remove_by_std" and len(vals) > 1:
-        v_std = std(vals)
-        if v_std != 0:
-            normalized_vals = [v for v in vals if abs(_calc_z_score(vals, v)) < 2.5]
-
-    return normalized_vals
+    return means, sds
 
 
 def _validate_gap_window(gap, w_sz):
     """Check that gap and window size are reasonable in r/l_score_helper."""
-    if w_sz < 1:
+    if int(w_sz * 0.8) < 1:
         raise ValueError("Window size must be larger than 1 to find a z-score")
     if gap < 0:
         raise ValueError("Gap size must be at least zero to find a z-score")
@@ -105,36 +64,30 @@ def z_scores(reads, gap=5, w_sz=50):
     """
     _validate_gap_window(gap, w_sz)
     _validate_reads(reads)
-    # make array of zscores - same length as raw reads, trimming based on window size:
-    z_scores = zeros([len(reads) - 2 * (gap + w_sz), 2])
+    padded_reads = _add_padding(reads, gap, w_sz)
+    pad_len = len(padded_reads[:, 0])
+    means, sds = _get_means_sds(padded_reads, w_sz)
+    print("calculated means and sds")
+    upper_zscores = np.divide(
+        np.subtract(
+            padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
+            means[(gap + w_sz) : len(means) - 1 - gap],
+        ),
+        sds[(gap + w_sz) : len(means) - 1 - gap],
+    )
+    print("calculated upper z scores")
+    lower_zscores = np.divide(
+        np.subtract(
+            padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
+            means[gap : len(means) - 1 - (gap + w_sz)],
+        ),
+        sds[gap : len(means) - 1 - (gap + w_sz)],
+    )
+    print("calculated lower z scores")
+    zscores = padded_reads[gap + w_sz : pad_len - (gap + w_sz)].copy()
+    zscores[:, 1] = np.min([lower_zscores, upper_zscores], axis=0)
 
-    # first column of return array is the location of the raw reads
-    z_scores[:, 0] = reads[gap + w_sz : len(reads) - (gap + w_sz), 0]
-
-    # Iterate through each valid read, recording z-score
-    for i in range((gap + w_sz + 1), (len(reads) - (gap + w_sz))):
-        # calculate the z score with values from the left:
-        i_score_pos = i - (gap + w_sz)
-        if reads[i, 1] > 5:
-            l_vals = _get_upper_reads(
-                i + gap, reads[i, 0] + gap, reads[i, 0] + gap + w_sz, reads
-            )
-            l_score = _calc_z_score(_remove_outliers(l_vals), reads[i, 1])
-
-            # calculate z score with reads from the right:
-            r_vals = _get_lower_reads(
-                i - gap, reads[i, 0] - gap, reads[i, 0] - gap - w_sz, reads
-            )
-            r_score = _calc_z_score(_remove_outliers(r_vals), reads[i, 1])
-
-            # set the zscore to be the smaller valid score of the left/right scores.
-            z_scores[i_score_pos, 1] = (
-                r_score if abs(r_score) < abs(l_score) else l_score
-            )
-        else:
-            z_scores[i_score_pos, 1] = 1
-
-    return z_scores
+    return zscores
 
 
 def parse_args_zscores(args):
