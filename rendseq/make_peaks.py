@@ -203,9 +203,9 @@ def thresh_peaks(z_scores, thresh=None, method="kink"):
     """
     if thresh is None:
         thresh = _calc_thresh(z_scores, method)
-    peaks = np.zeros([len(z_scores), 2])
+    peaks = 100 * np.ones([len(z_scores), 2])
     peaks[:, 0] = z_scores[:, 0]
-    peaks[:, 1] = (z_scores[:, 1] > thresh).astype(int)
+    peaks = np.delete(peaks, z_scores[:, 1] < thresh, 0)
     return peaks
 
 
