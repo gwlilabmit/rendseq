@@ -90,7 +90,7 @@ def z_scores(reads, gap=5, w_sz=50):
     return zscores
 
 
-def parse_args_zscores(args):
+def _parse_args_zscores(args):
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Takes raw read file and\
@@ -137,7 +137,7 @@ def main_zscores():
     Effect: Writes messages to standard out. If --save-file flag,
     also writes output to disk.
     """
-    args = parse_args_zscores(sys.argv[1:])
+    args = _parse_args_zscores(sys.argv[1:])
 
     # Calculate z-scores
     filename = args.filename

@@ -8,36 +8,32 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from rendseq.file_funcs import write_wig
 from rendseq.zscores import (
-    _calc_z_score,
-    _remove_outliers,
+    _add_padding,
+    _get_means_sds,
+    _parse_args_zscores,
+    _save_zscore,
     _validate_gap_window,
     main_zscores,
-    parse_args_zscores,
     z_scores,
 )
 
 
-@pytest.fixture
-def reads():
-    """Reads to use in multiple test cases"""
-    return array(
-        [
-            [1, 5],
-            [2, 6],
-            [3, 8],
-            [4, 10],
-            [5, 8],
-            [6, 10],
-            [7, 1200],
-            [8, 14],
-            [9, 1],
-            [10, 2],
-            [11, 5],
-            [12, 6],
-            [109, 2],
-            [208, 4],
-        ]
-    )
+class TestAddPadding:
+    @pytest.mark.parameterize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    def test_add_padding_new_length(self, gap, w_sz, partially_empty_reads):
+        """Test that padding is correctly added to partially empty reads"""
+        new_reads = _add_padding(partially_empty_reads, gap, w_sz, random_seed=1)
+        assert len(new_reads[0, :]) == (partially_empty_reads[0, -1] + gap + w_sz) - (
+            partially_empty_reads[0, 0] - gap - w_sz
+        )
+
+    @pytest.mark.parameterize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    def test_add_padding_new_length(self, gap, w_sz, partially_empty_reads):
+        """Test that padding is correctly added to partially empty reads"""
+        new_reads = _add_padding(partially_empty_reads, gap, w_sz, random_seed=1)
+        assert len(new_reads[0, :]) == (partially_empty_reads[0, -1] + gap + w_sz) - (
+            partially_empty_reads[0, 0] - gap - w_sz
+        )
 
 
 class TestMainAndParseArgsZscore:
@@ -108,7 +104,7 @@ class TestMainAndParseArgsZscore:
 
     def test_parse_args(self, regular_argslist):
         """Regular arguments"""
-        args = parse_args_zscores(regular_argslist)
+        args = _parse_args_zscores(regular_argslist)
         assert args.filename == "test_file"
         assert args.gap == "1"
         assert args.w_sz == "3"
@@ -117,7 +113,7 @@ class TestMainAndParseArgsZscore:
     def test_parse_args_defaults(self):
         """Makes sure the arg defaults are as-expected"""
         arg_list = ["test_file"]
-        args = parse_args_zscores(arg_list)
+        args = _parse_args_zscores(arg_list)
 
         assert args.filename == "test_file"
         assert args.gap == 5
@@ -190,36 +186,3 @@ class TestValidateGapWindow:
         """Gaps can be zero, but should warn"""
         with pytest.warns(UserWarning):
             _validate_gap_window(0, 100)
-
-
-class TestCalcZScore:
-    def test_z_score_normal(self, reads):
-        """Run-of-the-mill zscore"""
-        vals = reads[:, 1:]
-        assert _calc_z_score(vals, vals[1][0]) == pytest.approx(-0.2780832)
-
-    def test_z_score_constant(self):
-        """Zero stdev, same as all vals"""
-        assert _calc_z_score([5, 5, 5, 5, 5, 5, 5], 5) == 0
-
-
-class TestRemoveOutliers:
-    def test_remove_outliers_empty(self):
-        """Remove outliers from empty array"""
-        assert_array_equal(_remove_outliers(array([])), array([]))
-
-    def test_remove_outliers_homogen(self):
-        """No outliers in homogenous array"""
-        test_array = array([1] * 6)
-        assert_array_equal(_remove_outliers(test_array), test_array)
-
-    def test_remove_outliers_clearOutlier(self):
-        """A clear outlier"""
-        test_array = array(list(range(20)) + [80])
-        assert_array_equal(_remove_outliers(test_array), test_array[:-1])
-
-    def test_remove_outliers_borderline(self):
-        """Two values, near 2.5 stds away, but only one above"""
-        test_array = append(array([1] * 10), [4.2, 5])
-
-        assert_array_equal(_remove_outliers(test_array), test_array[:-1])
