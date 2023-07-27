@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import math
 import sys
 
+import numpy as np
 import pytest
+import scipy.stats as stats
 from mock import patch
-from numpy import append, array
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from rendseq.file_funcs import write_wig
@@ -19,37 +21,90 @@ from rendseq.zscores import (
 
 
 class TestAddPadding:
-    @pytest.mark.parameterize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    @pytest.mark.parametrize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
     def test_add_padding_new_length(self, gap, w_sz, partially_empty_reads):
-        """Test that padding is correctly added to partially empty reads"""
-        new_reads = _add_padding(partially_empty_reads, gap, w_sz, random_seed=1)
-        assert len(new_reads[0, :]) == (partially_empty_reads[0, -1] + gap + w_sz) - (
+        """Test that padding is correctly added to partially empty reads."""
+        new_reads = _add_padding(partially_empty_reads, gap, w_sz)
+        assert len(new_reads[:, 0]) == (partially_empty_reads[-1, 0] + gap + w_sz) - (
             partially_empty_reads[0, 0] - gap - w_sz
         )
 
-    @pytest.mark.parameterize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
-    def test_add_padding_new_length(self, gap, w_sz, partially_empty_reads):
-        """Test that padding is correctly added to partially empty reads"""
-        new_reads = _add_padding(partially_empty_reads, gap, w_sz, random_seed=1)
-        assert len(new_reads[0, :]) == (partially_empty_reads[0, -1] + gap + w_sz) - (
-            partially_empty_reads[0, 0] - gap - w_sz
+    @pytest.mark.parametrize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    def test_add_padding_is_normal(self, gap, w_sz, partially_empty_reads):
+        """Test that added padding is approximately normal."""
+        new_reads = _add_padding(partially_empty_reads, gap, w_sz)
+        added_indices = list(
+            filter(
+                lambda x: new_reads[x, 0] not in partially_empty_reads[:, 0],
+                list(range(len(new_reads[:, 0]))),
+            ),
+        )
+        added_vals = new_reads[added_indices, 1]
+        std = np.std(added_vals)
+        mean = np.mean(added_vals)
+        sem = std / (len(added_vals) ** (1 / 2))
+        assert stats.t.cdf(mean / sem, len(added_vals) - 1) > 0.01
+
+
+class TestMeanSds:
+    @pytest.mark.parametrize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    def test_with_no_modification(self, gap, w_sz, reads):
+        # Test that with no trimming and no winsorization the calc mean/std is of the unmodified array.
+        padded_reads = _add_padding(reads, gap, w_sz)
+        calc_mean, calc_std = _get_means_sds(
+            padded_reads,
+            w_sz,
+            percent_trim=0,
+            winsorize=False,
+        )
+        assert calc_mean[0] == np.mean(padded_reads[:w_sz, 1])
+        assert calc_std[0] == np.std(padded_reads[:w_sz, 1])
+
+    @pytest.mark.parametrize("gap,w_sz", [(1, 10), (5, 50), (100, 100)])
+    def test_trimming(self, gap, w_sz, partially_empty_reads):
+        # If we fill the start of the padded array with reads we expect to be trimmed - verify that the
+        # mean is just the mean of the array without them.
+        padded_reads = _add_padding(partially_empty_reads, gap, w_sz)
+        max_in_padded_reads = max(padded_reads[:w_sz, 1])
+        padded_reads[: int(w_sz * 0.1)] = max_in_padded_reads * 5
+        calc_mean, calc_std = _get_means_sds(
+            padded_reads,
+            w_sz,
+            percent_trim=0.1,
+            winsorize=False,
+        )
+        assert math.isclose(
+            calc_mean[0],
+            np.mean(padded_reads[int(w_sz * 0.1) : w_sz, 1]),
+            rel_tol=1e-07,
+        )
+        assert math.isclose(
+            calc_std[0], np.std(padded_reads[int(w_sz * 0.1) : w_sz, 1]), rel_tol=1e-07
+        )
+
+    def test_winsorization(self, winsorization_test_reads):
+        # If we fill the start of the padded array with reads we expect to be trimmed - verify that the
+        # mean is just the mean of the array without them.
+        fake_window = len(winsorization_test_reads[:, 0])
+        calc_mean, calc_std = _get_means_sds(
+            winsorization_test_reads,
+            fake_window,
+            percent_trim=0,
+            winsorize=True,
+        )
+        assert math.isclose(
+            calc_mean[0],
+            np.mean(winsorization_test_reads[1:fake_window, 1]),
+            rel_tol=1e-07,
+        )
+        assert math.isclose(
+            calc_std[0],
+            np.std(winsorization_test_reads[1:fake_window, 1]),
+            rel_tol=1e-07,
         )
 
 
 class TestMainAndParseArgsZscore:
-    @pytest.fixture
-    def regular_argslist(self):
-        """A normal list of sys.argv[1:]"""
-        return [
-            "test_file",
-            "--gap",
-            "1",
-            "--w_sz",
-            "3",
-            "--save_file",
-            False,
-        ]
-
     def test_main(self, tmpdir, capfd, reads, regular_argslist):
         """Main with normal settings"""
         # Create a wig file with the reads() fixture
@@ -81,7 +136,7 @@ class TestMainAndParseArgsZscore:
         chrom = "test_chrom"
 
         # Need a larger reads file for defaults
-        reads = array([[a, b] for a, b in zip(range(1, 1000), range(1001, 2000))])
+        reads = np.array([[a, b] for a, b in zip(range(1, 1000), range(1001, 2000))])
         write_wig(reads, file.strpath, chrom)
 
         # Modify the argslist with the temporary wig file
@@ -119,70 +174,3 @@ class TestMainAndParseArgsZscore:
         assert args.gap == 5
         assert args.w_sz == 50
         assert args.save_file
-
-
-class TestZScores:
-    def test_z_scores_regular(self, reads):
-        """Z-scores of the reads fixture"""
-        print(z_scores(reads, gap=1, w_sz=3))
-        assert_array_almost_equal(
-            z_scores(reads, gap=1, w_sz=3),
-            array(
-                [
-                    [5, 0],
-                    [6, -0.70262826],
-                    [7, 202.20038777],
-                    [8, -0.56829815],
-                    [9, -0.59611538],
-                    [10, -0.58959947],
-                ]
-            ),
-        )
-
-    def test_z_scores_outlier(self, reads):
-        """An outlier (near the edge where peaks aren't found) doesn't affect score"""
-        reads[11] = [12, 1e8]
-        print(z_scores(reads, gap=1, w_sz=3))
-        assert_array_almost_equal(
-            z_scores(reads, gap=1, w_sz=3),
-            array(
-                [
-                    [5, 0],
-                    [6, -0.70262826],
-                    [7, 202.20038777],
-                    [8, -0.56829815],
-                    [9, -0.59611538],
-                    [10, -0.58959947],
-                ]
-            ),
-        )
-
-
-class TestValidateGapWindow:
-    def test_window_zero(self):
-        """Windows can't be zero"""
-        with pytest.raises(ValueError) as e_info:
-            _validate_gap_window(100, 0)
-
-        assert (
-            e_info.value.args[0]
-            == "Window size must be larger than 1 to find a z-score"
-        )
-
-    def test_window_gap_positive(self):
-        """Windows and gaps can be positive"""
-        _validate_gap_window(100, 1)
-
-    def test_gap_negative(self):
-        """Gaps can't be negative"""
-        with pytest.raises(ValueError) as e_info:
-            _validate_gap_window(-1, 100)
-
-        assert (
-            e_info.value.args[0] == "Gap size must be at least zero to find a z-score"
-        )
-
-    def test_gap_zero(self):
-        """Gaps can be zero, but should warn"""
-        with pytest.warns(UserWarning):
-            _validate_gap_window(0, 100)

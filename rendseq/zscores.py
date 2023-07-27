@@ -21,13 +21,23 @@ def _add_padding(reads, gap, w_sz):
     return padded_reads
 
 
-def _get_means_sds(reads, w_sz):
+def _apply_std_dis_cutoff(window):
+    mask = np.abs(window - np.mean(window)) > 2 * np.std(window)
+    return window[~mask]
+
+
+def _get_means_sds(reads, w_sz, percent_trim=0, winsorize=False):
     """Calculate the arrays of mean and sd of tiled windows along data."""
-    sliding_windows = np.sort(
-        np.lib.stride_tricks.sliding_window_view(reads[:, 1], w_sz), axis=1
-    )[
-        :, : int(w_sz * 0.8)
-    ]  # Note - remove the to ~20% of values (other peaks?)
+    if percent_trim > 0:
+        sliding_windows = np.sort(
+            np.lib.stride_tricks.sliding_window_view(reads[:, 1], w_sz), axis=1
+        )[
+            :, : int(w_sz * (1 - percent_trim))
+        ]  # Note - remove the top ~x% of values (other peaks?)
+    else:
+        sliding_windows = np.lib.stride_tricks.sliding_window_view(reads[:, 1], w_sz)
+    if winsorize:
+        sliding_windows = np.apply_along_axis(_apply_std_dis_cutoff, 1, sliding_windows)
     means = np.mean(sliding_windows, axis=1)
     sds = np.std(sliding_windows, axis=1)
 
@@ -67,7 +77,6 @@ def z_scores(reads, gap=5, w_sz=50):
     padded_reads = _add_padding(reads, gap, w_sz)
     pad_len = len(padded_reads[:, 0])
     means, sds = _get_means_sds(padded_reads, w_sz)
-    print("calculated means and sds")
     upper_zscores = np.divide(
         np.subtract(
             padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
@@ -75,7 +84,6 @@ def z_scores(reads, gap=5, w_sz=50):
         ),
         sds[(gap + w_sz) : len(means) - 1 - gap],
     )
-    print("calculated upper z scores")
     lower_zscores = np.divide(
         np.subtract(
             padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
@@ -83,7 +91,6 @@ def z_scores(reads, gap=5, w_sz=50):
         ),
         sds[gap : len(means) - 1 - (gap + w_sz)],
     )
-    print("calculated lower z scores")
     zscores = padded_reads[gap + w_sz : pad_len - (gap + w_sz)].copy()
     zscores[:, 1] = np.min([lower_zscores, upper_zscores], axis=0)
 
