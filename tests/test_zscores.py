@@ -6,17 +6,13 @@ import numpy as np
 import pytest
 import scipy.stats as stats
 from mock import patch
-from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from rendseq.file_funcs import write_wig
 from rendseq.zscores import (
     _add_padding,
     _get_means_sds,
     _parse_args_zscores,
-    _save_zscore,
-    _validate_gap_window,
     main_zscores,
-    z_scores,
 )
 
 
