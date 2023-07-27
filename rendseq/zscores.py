@@ -56,7 +56,7 @@ def _validate_gap_window(gap, w_sz):
         )
 
 
-def z_scores(reads, gap=5, w_sz=50):
+def z_scores(reads, gap=5, w_sz=50, percent_trim=0, winsorize=True):
     """Perform modified z-score transformation of reads.
 
     Parameters
@@ -66,6 +66,11 @@ def z_scores(reads, gap=5, w_sz=50):
             interest that should be excluded in the z_score calculation.
         -w_sz (integer): the max distance (in nt) away from the current position
             one should include in zscore calulcation.
+        -percent_trim - what fraction of the top reads should be dropped before
+            calculating the mean and std?  ie 0.1 means the top 10% of reads
+            are dropped.
+        -winsorize - bool for whether or not after trimming any reads more than
+            1.5 std from the mean should be dropped.
 
     Returns
     -------
@@ -76,7 +81,7 @@ def z_scores(reads, gap=5, w_sz=50):
     _validate_reads(reads)
     padded_reads = _add_padding(reads, gap, w_sz)
     pad_len = len(padded_reads[:, 0])
-    means, sds = _get_means_sds(padded_reads, w_sz)
+    means, sds = _get_means_sds(padded_reads, w_sz, percent_trim, winsorize)
     upper_zscores = np.divide(
         np.subtract(
             padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
