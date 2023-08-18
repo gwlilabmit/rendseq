@@ -3,7 +3,7 @@ Welcome to rendseq's documentation!
 
 This is an in-development package for the analysis of end-enriched RNA sequencing data.
 
-For more information, see our website dedicated to rendseq: https://rendseq.org/ or our GitHub page: https://github.com/miraep8/rendseq
+For more information, see our `website dedicated to all things rendseq: <https://rendseq.org/>` or our `GitHub page <https://github.com/miraep8/rendseq>`.
 
 File Functions
 ==============
