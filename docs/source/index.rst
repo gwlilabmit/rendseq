@@ -1,9 +1,12 @@
-Welcome to rendseq's documentation!
-===================================
+===================
+Welcome to rendseq!
+===================
 
-This is an in-development package for the analysis of end-enriched RNA sequencing data.
+The package to power your analysis of end-enriched RNA sequencing data!
 
-For more information, see our GitHub page: https://github.com/miraep8/rendseq 
+This package is still under developement - we welcome any bug reporting, ideas, or contributions!
+
+For more information, see our `website dedicated to all things rendseq: <https://rendseq.org/>`_ or our `GitHub page <https://github.com/miraep8/rendseq>`_.
 
 File Functions
 ==============
@@ -25,8 +28,6 @@ Functions for calling peaks from Z-Scores
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-
 
 Indices and tables
 ==================
