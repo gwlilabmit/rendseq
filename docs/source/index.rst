@@ -29,10 +29,6 @@ Functions for calling peaks from Z-Scores
    :maxdepth: 2
    :caption: Contents:
 
-Example Notebook Gallery
-========================
-
-.. nbgallery::
    example_notebooks/00 Basic Peak Calling with Wigs.ipynb
 
 Indices and tables
