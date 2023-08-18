@@ -8,10 +8,19 @@ on:
       - main
 
 jobs:
-  docs:
+  test-build-docs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs/"
+
+  preview-docs:
+    needs: test-build-docs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: readthedocs/actions/preview@v1
       with:
         docs-folder: "docs/"
