@@ -1,7 +1,10 @@
-Welcome to rendseq's documentation!
-===================================
+===================
+Welcome to rendseq!
+===================
 
-This is an in-development package for the analysis of end-enriched RNA sequencing data.
+The package to power your analysis of end-enriched RNA sequencing data!
+
+This package is still under developement - we welcome any bug reporting, ideas, or contributions!
 
 For more information, see our `website dedicated to all things rendseq: <https://rendseq.org/>` or our `GitHub page <https://github.com/miraep8/rendseq>`.
 
@@ -26,7 +29,11 @@ Functions for calling peaks from Z-Scores
    :maxdepth: 2
    :caption: Contents:
 
-   example_notebooks/00 Basic Peak Calling with Wigs
+Example Notebook Gallery
+========================
+
+.. nbgallery::
+   example_notebooks/00 Basic Peak Calling with Wigs.ipynb
 
 Indices and tables
 ==================
