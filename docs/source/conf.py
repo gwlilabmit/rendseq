@@ -16,7 +16,7 @@
 import os
 import sys
 
-import sphinx_readable_theme
+# import sphinx_readable_theme
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -58,14 +58,14 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = "sphinx_rtd_theme"
-html_theme = "readable"
-html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
+html_theme = "sphinx_rtd_theme"
+# html_theme = "readable"
+# html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ["_static"]
+html_static_path = ["_static"]
 
 
 # -- Extension configuration -------------------------------------------------
