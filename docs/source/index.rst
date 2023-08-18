@@ -6,7 +6,7 @@ The package to power your analysis of end-enriched RNA sequencing data!
 
 This package is still under developement - we welcome any bug reporting, ideas, or contributions!
 
-For more information, see our `website dedicated to all things rendseq: <https://rendseq.org/>` or our `GitHub page <https://github.com/miraep8/rendseq>`.
+For more information, see our `website dedicated to all things rendseq: <https://rendseq.org/>`_ or our `GitHub page <https://github.com/miraep8/rendseq>`_.
 
 File Functions
 ==============
@@ -28,6 +28,8 @@ Functions for calling peaks from Z-Scores
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   example_notebooks/00 Basic Peak Calling with Wigs.ipynb
 
 Indices and tables
 ==================
