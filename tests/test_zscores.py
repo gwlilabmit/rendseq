@@ -93,9 +93,12 @@ class TestMeanSds:
             np.mean(winsorization_test_reads[1:fake_window, 1]),
             rel_tol=1e-07,
         )
+        new_arr = np.append(
+            winsorization_test_reads[1:fake_window, 1], [calc_mean[0]], axis=0
+        )
         assert math.isclose(
             calc_std[0],
-            np.std(winsorization_test_reads[1:fake_window, 1]),
+            np.std(new_arr),
             rel_tol=1e-07,
         )
 

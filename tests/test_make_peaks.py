@@ -3,9 +3,9 @@ import sys
 from os import remove
 from os.path import exists
 
+import numpy as np
 import pytest
 from mock import patch
-from numpy import array, ndim, where
 from numpy.random import normal
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
@@ -24,7 +24,7 @@ from rendseq.make_peaks import (
 @pytest.fixture
 def z_scores():
     """Define some random z-scores."""
-    return array(
+    return np.array(
         [[loc, z] for loc, z in zip(range(1, 1000), normal(0, 1, size=(1, 1000))[0])]
     )
 
@@ -119,11 +119,13 @@ class TestParseArgsAndMain:
                     == "undefined is not a valid peak finding method, see --help"
                 )
 
-    def test_main_defaults(self, tmpdir, capfd, z_scores):
+    def test_main_defaults_with_peak(self, tmpdir, capfd, z_scores):
         # Create a wig file with the z_scores() fixture
         file = tmpdir.join("file.wig")
         chrom = "test_chrom"
-        write_wig(z_scores, file.strpath, chrom)
+        peak_z_scores = z_scores.copy()
+        peak_z_scores[len(z_scores) // 2, 1] = 10000
+        write_wig(peak_z_scores, file.strpath, chrom)
 
         # Modify the argslist with the temporary wig file
         default_argslist = ["", file.strpath, "thresh"]
@@ -140,6 +142,30 @@ class TestParseArgsAndMain:
                 [
                     f"Using the thresholding method to find peaks for {file.strpath}",
                     f"Wrote peaks to {outfile}\n",
+                ]
+            )
+
+    def test_main_defaults_no_peak(self, tmpdir, capfd, z_scores):
+        # Create a wig file with the z_scores() fixture
+        file = tmpdir.join("file.wig")
+        chrom = "test_chrom"
+        write_wig(z_scores, file.strpath, chrom)
+
+        # Modify the argslist with the temporary wig file
+        default_argslist = ["", file.strpath, "thresh"]
+
+        # Run the main function
+        with patch.object(sys, "argv", default_argslist):
+            main_make_peaks()
+            clean_kink()
+            assert exists(file.strpath[0:-8].replace("\\", "/") + "Peaks/")
+            outfile = file.strpath[0:-8].replace("\\", "/") + "Peaks/file_peaks.wig"
+            assert not exists(outfile)
+            out, err = capfd.readouterr()
+            assert out == "\n".join(
+                [
+                    f"Using the thresholding method to find peaks for {file.strpath}",
+                    "No peaks were found to report\n",
                 ]
             )
 
@@ -164,10 +190,10 @@ class TestPopulateTransMat:
     # TODO: Need more detailed tests
     def test_populate_trans_mat(self, capfd, z_scores):
         matricies = _populate_trans_mat(
-            z_scores, 10, 2, array([[0.5, 0.5], [0.5, 0.5]]), [1, 100]
+            z_scores, 10, 2, np.array([[0.5, 0.5], [0.5, 0.5]]), [1, 100]
         )
 
-        assert ndim(matricies) == 3
+        assert np.ndim(matricies) == 3
 
         # Test print output
         out, err = capfd.readouterr()
@@ -178,7 +204,9 @@ class TestHmmPeaks:
     def test_hmm_peaks(self, capfd, z_scores):
         """A regular set of z scores with a peak."""
         z_scores[500, 1] = 5
-        peaks_almost_1 = array([[loc, z] for loc, z in zip(range(1, 1000), [1] * 1000)])
+        peaks_almost_1 = np.array(
+            [[loc, z] for loc, z in zip(range(1, 1000), [1] * 1000)]
+        )
         peaks_almost_1[500, 1] = 100
         assert_array_equal(hmm_peaks(z_scores), peaks_almost_1)
 
@@ -189,7 +217,9 @@ class TestHmmPeaks:
     def test_hmm_peaks_extremePeak_notinCenter(self, capfd, z_scores):
         """A regular set of z scores with an extreme peak."""
         z_scores[500, 1] = 10e4
-        peaks_almost_1 = array([[loc, z] for loc, z in zip(range(1, 1000), [1] * 1000)])
+        peaks_almost_1 = np.array(
+            [[loc, z] for loc, z in zip(range(1, 1000), [1] * 1000)]
+        )
         peaks_almost_1[500, 1] = 100
 
         assert_array_equal(hmm_peaks(z_scores), peaks_almost_1)
@@ -207,7 +237,7 @@ class TestHmmPeaks:
     def test_hmm_peaks_p_to_p_is_one(self, z_scores):
         """A regular set of z scores with a peak."""
         NUM_PNTS = 1000
-        z_scores = array(
+        z_scores = np.array(
             [
                 [loc, z]
                 for loc, z in zip(
@@ -215,7 +245,7 @@ class TestHmmPeaks:
                 )
             ]
         )
-        all_peaks = array(
+        all_peaks = np.array(
             [[loc, z] for loc, z in zip(range(1, NUM_PNTS), [100] * NUM_PNTS)]
         )
 
@@ -234,27 +264,22 @@ def test_make_kink_fig(tmpdir):
 class TestThreshPeaks:
     def test_thresh_peaks_highThresh(self, z_scores):
         """Very high threshold."""
-        z_scores_0 = array([[loc, z] for loc, z in zip(range(1, 1000), [0] * 1000)])
-        assert_array_equal(thresh_peaks(z_scores, thresh=1e9), z_scores_0)
+        peaks = thresh_peaks(z_scores, thresh=1e9)
+        assert len(peaks) == 0
 
     def test_thresh_peaks_lowThreshold(self, z_scores):
         """A very low threshold."""
-        z_scores_1 = array([[loc, z] for loc, z in zip(range(1, 1000), [1] * 1000)])
-        assert_array_almost_equal(thresh_peaks(z_scores, thresh=-1e9), z_scores_1)
+        peaks = thresh_peaks(z_scores, thresh=-1e9)
+        assert len(peaks) == len(z_scores)
 
     def test_thresh_peaks_threshold(self, z_scores):
         """Test the filtering: threshold is exactly at one point."""
-        z_scores_almost0 = array(
-            [[loc, z] for loc, z in zip(range(1, 1000), [0] * 1000)]
-        )
         max_score = max(z_scores[:, 1])
         thresh = max_score - 1e-6
 
-        z_scores_almost0[where(z_scores == max_score)[0], 1] = 1
+        expected_peaks = [[z_scores[np.argmax(z_scores[:, 1]), 0], 100]]
 
-        assert_array_almost_equal(
-            thresh_peaks(z_scores, thresh=thresh), z_scores_almost0
-        )
+        assert_array_almost_equal(thresh_peaks(z_scores, thresh=thresh), expected_peaks)
 
 
 class TestCalcThresh:
