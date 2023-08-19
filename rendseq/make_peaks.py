@@ -185,7 +185,8 @@ def _calc_thresh(z_scores, method, kink_img="./kink.png"):
                     f"Please select one from {methods}.",
                     f"Defaulting to threshold of {thresh}.",
                 ]
-            )
+            ),
+            stacklevel=2,
         )
     return thresh
 
