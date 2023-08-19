@@ -185,7 +185,8 @@ def _calc_thresh(z_scores, method, kink_img="./kink.png"):
                     f"Please select one from {methods}.",
                     f"Defaulting to threshold of {thresh}.",
                 ]
-            )
+            ),
+            stacklevel=2,
         )
     return thresh
 
@@ -253,8 +254,11 @@ def main_make_peaks():
         peak_dir = make_new_dir([file_loc, "/Peaks/"])
         file_start = filename[filename.rfind("/") + 1 : filename.rfind(".wig")]
         peak_file = "".join([peak_dir, file_start, "_peaks.wig"])
-        write_wig(peaks, peak_file, chrom)
-        print(f"Wrote peaks to {peak_file}")
+        if len(peaks) > 0:
+            write_wig(peaks, peak_file, chrom)
+            print(f"Wrote peaks to {peak_file}")
+        else:
+            print("No peaks were found to report")
 
 
 if __name__ == "__main__":
