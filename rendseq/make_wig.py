@@ -39,34 +39,36 @@ def bowtie_to_wig(infile, wig_file_prefix="", peak_file=None):
         for line in f:
             fields = line.split("\t")
             length = len(fields[9])
-            fiveprime = int(fields[3])
-            strand = str(fields[1])
-            chrom = str(fields[2])
-            strand = "+" if strand == "0" else "-"
-            mismatch_info = fields[12][fields[12].rfind(":") + 1 :]
-            if mismatch_info[0] == "0":
-                if strand == "+":
+            if (length > 14) and (length < 45):
+                fiveprime = int(fields[3])
+                strand = str(fields[1])
+                chrom = str(fields[2])
+                strand = "+" if strand == "0" else "-"
+                mismatch_info = fields[12][fields[12].rfind(":") + 1 :]
+                if strand == "+" and mismatch_info[0] == "0":
                     fiveprime += 1
-                length -= 1
+                    length -= 1
+                if strand == "-" and mismatch_info[-1] == "0":
+                    length -= 1
 
-            end_5 = fiveprime + 1
-            end_3 = fiveprime + length
-            if chrom not in genomes.keys():
-                genomes[chrom] = defaultdict(lambda: defaultdict(int))
-            if strand == "+":
-                genomes[chrom]["3f"][end_3] += (
-                    peak_adjust(peaks["5f"], end_5) if peaks else 1
-                )
-                genomes[chrom]["5f"][end_5] += (
-                    peak_adjust(peaks["3f"], end_3) if peaks else 1
-                )
-            elif strand == "-":
-                genomes[chrom]["3r"][end_5] += (
-                    peak_adjust(peaks["5r"], end_3) if peaks else 1
-                )
-                genomes[chrom]["5r"][end_3] += (
-                    peak_adjust(peaks["3r"], end_5) if peaks else 1
-                )
+                end_5 = fiveprime + 1
+                end_3 = fiveprime + length
+                if chrom not in genomes.keys():
+                    genomes[chrom] = defaultdict(lambda: defaultdict(int))
+                if strand == "+":
+                    genomes[chrom]["3f"][end_3] += (
+                        peak_adjust(peaks["5f"], end_5) if peaks else 1
+                    )
+                    genomes[chrom]["5f"][end_5] += (
+                        peak_adjust(peaks["3f"], end_3) if peaks else 1
+                    )
+                elif strand == "-":
+                    genomes[chrom]["3r"][end_5] += (
+                        peak_adjust(peaks["5r"], end_3) if peaks else 1
+                    )
+                    genomes[chrom]["5r"][end_3] += (
+                        peak_adjust(peaks["3r"], end_5) if peaks else 1
+                    )
 
     for chrom in genomes:
         write_wig(genomes[chrom]["3f"], "".join([wig_file_prefix, "_3f.wig"]), chrom)
