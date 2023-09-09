@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import random
 import tempfile
 from distutils import dir_util
 
@@ -23,7 +24,10 @@ def datadir(tmpdir, request):
 
 def test_wig_trims_untemplated_addition(datadir):
     temp_dir = tempfile.gettempdir()
-    wig_prefix = "".join([str(temp_dir), "\wigs_"])
+    rand_str = "".join(
+        random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") for _ in range(10)
+    )
+    wig_prefix = "".join([str(temp_dir), "/wigs", rand_str])
     bowtie_file = datadir.join("test_files/test.fastq")
     bowtie_to_wig(bowtie_file, wig_file_prefix=wig_prefix)
     wig_ends = ["3f.wig", "3r.wig", "5f.wig", "5r.wig"]
