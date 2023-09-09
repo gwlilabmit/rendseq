@@ -51,7 +51,7 @@ def write_wig(wig_track, wig_file_name, chrom_name):
     _validate_reads(wig_track)
     d_inds = where(wig_track[:, 0] < 1)
     wig_track = delete(wig_track, d_inds, axis=0)
-    with open(wig_file_name, "w+", encoding="utf-8") as wig_file:
+    with open(wig_file_name, "w+") as wig_file:
         wig_file.write("track type=wiggle_0\n")
         wig_file.write(f"variableStep chrom={chrom_name}\n")
         for i in range(len(wig_track)):
@@ -75,12 +75,12 @@ def open_wig(filename):
     # first we will read the chrom from the second line in the wig file:
     with open(filename, "r", encoding="utf8") as file:
         try:
-            next(file)
-        except StopIteration:
-            raise ValueError(f"{filename} appears to have zero lines")
+            line = file.readline()
+            line = file.readline()
+            chrom = line[line.rfind("=") + 1 :].rstrip()
+        except EOFError as e:
+            raise ValueError("{} appears to have zero lines".format(filename)) from e
 
-        line = file.readline()
-        chrom = line[line.rfind("=") + 1 :].rstrip()
     # next we read all the wig file data and return that if it's valid:
     reads = asarray(read_csv(filename, sep="\t", header=1, names=["bp", "count"]))
     _validate_reads(reads)

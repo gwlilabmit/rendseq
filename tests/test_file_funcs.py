@@ -94,7 +94,7 @@ class TestOpenWriteWig:
         with pytest.raises(ValueError) as e_info:
             open_wig(file.strpath)
 
-        assert e_info.value.args[0][-10::] == "zero lines"
+        assert e_info.value.args[0] == "requires non-empty reads"
 
     def test_open_wig_malformatted(self, tmpdir):
         """open a funky wig file"""
