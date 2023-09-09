@@ -24,11 +24,11 @@ def datadir(tmpdir, request):
 def test_wig_trims_untemplated_addition(datadir):
     temp_dir = tempfile.gettempdir()
     wig_prefix = "".join([str(temp_dir), "\wigs_"])
-    bowtie_file = datadir.join("test.fastq")
+    bowtie_file = datadir.join("test_files/test.fastq")
     bowtie_to_wig(bowtie_file, wig_file_prefix=wig_prefix)
     wig_ends = ["3f.wig", "3r.wig", "5f.wig", "5r.wig"]
     for w in wig_ends:
-        target_wig_name = "".join(["test", w])
+        target_wig_name = "".join(["test_files/test", w])
         target_wig_file = datadir.join(target_wig_name)
         target_w, target_c = open_wig(target_wig_file)
         gen_w, gen_c = open_wig("".join([wig_prefix, w]))
