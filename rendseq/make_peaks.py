@@ -4,9 +4,10 @@
 import argparse
 import sys
 import warnings
-from os.path import abspath
+from os.path import abspath, dirname
 
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.stats import norm
 
@@ -208,6 +209,50 @@ def thresh_peaks(z_scores, thresh=None, method="kink"):
     peaks[:, 0] = z_scores[:, 0]
     peaks = np.delete(peaks, z_scores[:, 1] < thresh, 0)
     return peaks
+
+
+def thresh_all_peaks(
+    z_score_prefix, peak_file_name="", thresh=12, z_score_ends=None, track_names=None
+):
+    """Call peaks for 4 z score files starting with z_score_prefix.
+
+    Parameters
+    ----------
+        -z_score_prefix: (required), str with the start of the file path for
+            all z_score files.
+        -peak_file_name: (optional, default=""), name of peak file to write peak
+            tracks to.  If none is provided one will be generated in the directory
+            above the z_score prefix file.
+        -thresh: (optional, default=12)
+        -z_score_ends: (optional, default=None) list of z score ends to append to
+            z_score_prefix to make file ends.
+        -track_names: (optional, default=None) list of names of the tracks to use for
+            each z_score file.  Must be same length as z_score_ends.
+
+    Returns
+    -------
+        -peaks: str path to the location of the peaks file.
+    """
+    if z_score_ends is None:
+        z_score_ends = [
+            "_5f_zscore.wig",
+            "_3f_zscore.wig",
+            "_5r_zscore.wig",
+            "_3r_zscore.wig",
+        ]
+        track_names = ["5f", "3f", "5r", "3r"]
+    if len(z_score_ends) != len(track_names):
+        raise ValueError("track_names and z_score_ends must be the same length.")
+    if peak_file_name == "":
+        peak_file_name = "".join([dirname(dirname(z_score_prefix)), "peaks.csv"])
+
+    peak_df = pd.DataFrame()
+    for ind, z in enumerate(z_score_ends):
+        reads, _ = open_wig("".join([z_score_prefix, z]))
+        peaks = thresh_peaks(reads, thresh=thresh)
+        peak_df[track_names[ind]] = peaks[:, 0]
+    peak_df.to_csv(peak_file_name)
+    return peak_file_name
 
 
 def parse_args_make_peaks(args):
