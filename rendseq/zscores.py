@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Functions needed for z-score transforming raw rendSeq data."""
 import argparse
+import datetime
 import sys
 import warnings
 from os import mkdir
@@ -104,7 +105,49 @@ def z_scores(reads, gap=5, w_sz=50, percent_trim=0, winsorize=True):
     zscores = padded_reads[gap + w_sz : pad_len - (gap + w_sz)].copy()
     zscores[:, 1] = np.min([lower_zscores, upper_zscores], axis=0)
 
-    return zscores
+    return zscores[np.where(zscores[:, 1] > 5), :][0]
+
+
+def call_all_zscores(wig_prefix, z_score_prefix="", wig_ends=None, zscore_ends=None):
+    """Call all z-score for all wigs with wig_prefix and wig_ends.
+
+    Parameters
+    ----------
+        -wig_prefix: (required), str with the start of the file path for
+            all wig files.
+        -z_score_prefix: (optional, default=""), name of z_score prefix to use for
+            all generated z_score files.  If none is provided one will be generated
+            in the directory above the wig directory called zscores.
+        -wig_ends: (optional, default=None) list of wig ends to append to
+            wig_prefix to make all the wig files for processing.
+        -zscore_ends: (optional, default=None) list the z_score ends to use for each
+            corresponding wig_end.
+
+    Returns
+    -------
+        -z_score_prefix: str of the z_score prefix of all z_scores generated here.
+    """
+    if z_score_prefix == "":
+        p_dir = "".join([dirname(dirname(wig_prefix)), "/zscores/"])
+        file_b = basename(wig_prefix)
+        if not exists(p_dir):
+            mkdir(p_dir)
+        current_date = str(datetime.date.today())
+        z_score_prefix = "".join([p_dir, file_b, "_", current_date])
+
+    if wig_ends is None:
+        wig_ends = ["_5f.wig", "_3f.wig", "_5r.wig", "_3r.wig"]
+        zscore_ends = [
+            "_5f_zscore.wig",
+            "_3f_zscore.wig",
+            "_5r_zscore.wig",
+            "_3r_zscore.wig",
+        ]
+    for ind, w in enumerate(wig_ends):
+        reads, chrom = open_wig("".join([wig_prefix, w]))
+        z_scr = z_scores(reads, percent_trim=0.02)
+        write_wig(z_scr, "".join([z_score_prefix, zscore_ends[ind]]), chrom)
+    return z_score_prefix
 
 
 def call_all_zscores(wig_prefix, z_score_prefix="", wig_ends=None, zscore_ends=None):

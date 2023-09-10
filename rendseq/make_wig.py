@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """Functions to help convert aligned bowtie sam files into 4 Rend-seq tracks."""
 
+import json
 import os
 import sys
 from collections import defaultdict
 
 import numpy as np
-import pandas as pd
 
 from rendseq.file_funcs import write_wig
 
@@ -52,7 +52,11 @@ def bowtie_to_wig(infile, wig_file_prefix="", peak_file=None):
         - peaks: optional (default = None). Path to a peaks file, which can be used
             eliminate the shadows from peaks.
     """
-    peaks = pd.read_csv(peak_file) if peak_file else None
+    peaks = None
+    if peak_file:
+        with open(peak_file, "r") as f:
+            peaks = json.load(f)
+
     if wig_file_prefix == "":
         dir = os.path.dirname(infile)
         file = os.path.basename(infile)
