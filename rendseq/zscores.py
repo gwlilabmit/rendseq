@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Functions needed for z-score transforming raw rendSeq data."""
 import argparse
+import datetime
 import sys
 import warnings
 from os import mkdir
@@ -104,7 +105,7 @@ def z_scores(reads, gap=5, w_sz=50, percent_trim=0, winsorize=True):
     zscores = padded_reads[gap + w_sz : pad_len - (gap + w_sz)].copy()
     zscores[:, 1] = np.min([lower_zscores, upper_zscores], axis=0)
 
-    return zscores
+    return zscores[np.where(zscores[:, 1] > 5), :][0]
 
 
 def call_all_zscores(wig_prefix, z_score_prefix="", wig_ends=None, zscore_ends=None):
@@ -131,7 +132,8 @@ def call_all_zscores(wig_prefix, z_score_prefix="", wig_ends=None, zscore_ends=N
         file_b = basename(wig_prefix)
         if not exists(p_dir):
             mkdir(p_dir)
-        z_score_prefix = "".join([p_dir, file_b])
+        current_date = str(datetime.date.today())
+        z_score_prefix = "".join([p_dir, file_b, "_", current_date])
 
     if wig_ends is None:
         wig_ends = ["_5f.wig", "_3f.wig", "_5r.wig", "_3r.wig"]

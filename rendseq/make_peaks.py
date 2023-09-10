@@ -2,12 +2,13 @@
 """Take normalized raw data find the peaks in it."""
 
 import argparse
+import json
 import sys
 import warnings
-from os.path import abspath, dirname
+from os import mkdir
+from os.path import abspath, basename, dirname, exists
 
 import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.stats import norm
 
@@ -244,14 +245,24 @@ def thresh_all_peaks(
     if len(z_score_ends) != len(track_names):
         raise ValueError("track_names and z_score_ends must be the same length.")
     if peak_file_name == "":
-        peak_file_name = "".join([dirname(dirname(z_score_prefix)), "peaks.csv"])
-
-    peak_df = pd.DataFrame()
+        base = "".join([basename(z_score_prefix)])
+        peak_file_name = "".join([dirname(dirname(z_score_prefix)), base, "peaks.csv"])
+    p_dir = "".join([dirname(dirname(z_score_prefix)), "/peaks/"])
+    peak_file_prefix = "".join([p_dir, base])
+    if not exists(p_dir):
+        mkdir(p_dir)
+    peak_df = {}
     for ind, z in enumerate(z_score_ends):
-        reads, _ = open_wig("".join([z_score_prefix, z]))
+        reads, chrom = open_wig("".join([z_score_prefix, z]))
         peaks = thresh_peaks(reads, thresh=thresh)
-        peak_df[track_names[ind]] = peaks[:, 0]
-    peak_df.to_csv(peak_file_name)
+        write_wig(
+            peaks,
+            "".join([peak_file_prefix, "_peaks_", track_names[ind], ".wig"]),
+            chrom,
+        )
+        peak_df[track_names[ind]] = peaks[:, 0].tolist()
+    with open(peak_file_name, "w+") as f:
+        json.dump(peak_df, f, indent=4)
     return peak_file_name
 
 
