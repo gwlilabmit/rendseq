@@ -56,6 +56,7 @@ def bowtie_to_wig(infile, wig_file_prefix="", peak_file=None):
     if peak_file:
         with open(peak_file, "r") as f:
             peaks = json.load(f)
+
     if wig_file_prefix == "":
         dir = os.path.dirname(infile)
         file = os.path.basename(infile)

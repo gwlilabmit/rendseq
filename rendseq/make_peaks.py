@@ -8,7 +8,9 @@ import warnings
 from os import mkdir
 from os.path import abspath, basename, dirname, exists
 
+
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.stats import norm
 
@@ -263,6 +265,7 @@ def thresh_all_peaks(
         peak_df[track_names[ind]] = peaks[:, 0].tolist()
     with open(peak_file_name, "w+") as f:
         json.dump(peak_df, f, indent=4)
+
     return peak_file_name
 
 
