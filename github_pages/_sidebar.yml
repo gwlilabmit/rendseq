@@ -1,0 +1,14 @@
+website:
+  sidebar:
+  - contents:
+    - reference/index.qmd
+    - contents:
+      - reference/bowtie_to_peak.qmd
+      - reference/bowtie_to_peak_remove_shadows.qmd
+      section: End to End pipelining
+    - contents:
+      - reference/hmm_peaks.qmd
+      - reference/thresh_peaks.qmd
+      section: Peak Calling
+    id: reference
+  - id: dummy-sidebar

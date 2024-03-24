@@ -1,0 +1,11 @@
+# bowtie_to_peak { #rendseq.end_to_end.bowtie_to_peak }
+
+`end_to_end.bowtie_to_peak(bowtie_file, thresh=12, peak_file=None)`
+
+Convert bowtie aligned file to peaks for 5r, 5f, 3r, and 3f.
+
+## Returns
+
+| Type                                                | Description   |
+|-----------------------------------------------------|---------------|
+| -peaks: str path to the location of the peaks file. |               |

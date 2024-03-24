@@ -1,0 +1,11 @@
+# hmm_peaks { #rendseq.make_peaks.hmm_peaks }
+
+`make_peaks.hmm_peaks(z_scores, i_to_p=1 / 1000, p_to_p=1 / 1.5, peak_center=10, spread=2)`
+
+Fit peaks to the provided z_scores data set using the vertibi algorithm.
+
+## Returns
+
+| Type                                                                    | Description                     |
+|-------------------------------------------------------------------------|---------------------------------|
+| -peaks: a 2xn array with the first column being position and the second | column being a peak assignment. |

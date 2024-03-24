@@ -43,7 +43,9 @@ To get started - install our package via pip
 
   `pip install rendseq`
 
-To learn more about how to use this package -please check out our [documentation page](https://rendseq.readthedocs.io/en/latest/).
+To learn more about how to use this package -please check out our [documentation page](https://rendseq.readthedocs.io/en/latest/).  (built by Quarto)
+
+We also have example notebooks which can be accessed in the ["example notebooks"](https://github.com/gwlilabmit/rendseq/tree/main/example%20noteboooks) subfolder".  This folder also includes some example data to see proper formatting and to play around with.  These example notebooks can also be viewed on our [documentation page]().
 
 # Contribute
 

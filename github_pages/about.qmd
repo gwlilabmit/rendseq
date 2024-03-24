@@ -1,0 +1,7 @@
+---
+title: "About"
+---
+
+rendseq is an open source python package developed by the Li Lab at MIT.  [Visit our lab website](https://www.genesgroup.org/) to learn more about what we are up to!
+
+Rend-seq data is a type of RNA-sequencing data that can aid in the identification of transcript boundaries by enriching for transcript ends.  We have created an interactive website for viewing Rend-seq data: [rendseq.org](https://rendseq.org/).

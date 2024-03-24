@@ -1,0 +1,58 @@
+project:
+  type: website
+  output-dir: github_site
+
+website:
+  title: "rendseq"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - href: algorithm.qmd
+        text: Peak-Calling Algorithm
+      - href: reference/index.qmd
+        text: Function References
+  sidebar:
+    style: "floating"
+    collapse-level: 1
+    contents:
+      - section: End-to-End pipelining
+        contents:
+          - text: "`bowtie_to_peak`"
+            href: reference/bowtie_to_peak.qmd
+          - text: "`bowtie_to_peak_remove_shadows`"
+            href: reference/bowtie_to_peak_remove_shadows.qmd
+      - section: Peak Calling
+        contents:
+          - text: "`hmm_peaks`"
+            href: reference/hmm_peaks.qmd
+          - text: "`thresh_peaks`"
+            href: reference/thresh_peaks.qmd
+
+format:
+  html:
+    theme: minty
+    css: styles.css
+    toc: true
+
+quartodoc:
+  package: rendseq
+  sidebar: _sidebar.yml
+
+  sections:
+    - title: End to End pipelining
+      desc: Functions to go from alignment to peaks
+      package: rendseq.end_to_end
+      contents:
+        - bowtie_to_peak
+        - bowtie_to_peak_remove_shadows
+    - title: Peak Calling
+      desc: Functions to call peaks from Rend-seq data.
+      package: rendseq.make_peaks
+      contents:
+        - hmm_peaks
+        - thresh_peaks
+
+
+

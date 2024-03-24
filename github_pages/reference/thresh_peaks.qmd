@@ -1,0 +1,5 @@
+# thresh_peaks { #rendseq.make_peaks.thresh_peaks }
+
+`make_peaks.thresh_peaks(z_scores, thresh=None, method='kink')`
+
+Find peaks by calling z-scores above a threshold as a peak.
