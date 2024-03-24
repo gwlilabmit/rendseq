@@ -1,0 +1,11 @@
+# bowtie_to_peak_remove_shadows { #rendseq.end_to_end.bowtie_to_peak_remove_shadows }
+
+`end_to_end.bowtie_to_peak_remove_shadows(bowtie_file, thresh=12)`
+
+Convert bowtie aligned file to peaks after shadow removal.
+
+## Returns
+
+| Type                                                       | Description            |
+|------------------------------------------------------------|------------------------|
+| -peaks: str path to the location of the peaks file (called | after shadow removal). |
