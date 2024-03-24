@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "reference/thresh_peaks.html",
+    "href": "reference/thresh_peaks.html",
+    "title": "thresh_peaks",
+    "section": "",
+    "text": "thresh_peaks\nmake_peaks.thresh_peaks(z_scores, thresh=None, method='kink')\nFind peaks by calling z-scores above a threshold as a peak.",
+    "crumbs": [
+      "Home",
+      "Peak Calling",
+      "`thresh_peaks`"
+    ]
+  },
+  {
+    "objectID": "reference/hmm_peaks.html",
+    "href": "reference/hmm_peaks.html",
+    "title": "hmm_peaks",
+    "section": "",
+    "text": "make_peaks.hmm_peaks(z_scores, i_to_p=1 / 1000, p_to_p=1 / 1.5, peak_center=10, spread=2)\nFit peaks to the provided z_scores data set using the vertibi algorithm.\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\n-peaks: a 2xn array with the first column being position and the second\ncolumn being a peak assignment.",
+    "crumbs": [
+      "Home",
+      "Peak Calling",
+      "`hmm_peaks`"
+    ]
+  },
+  {
+    "objectID": "reference/hmm_peaks.html#returns",
+    "href": "reference/hmm_peaks.html#returns",
+    "title": "hmm_peaks",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\n-peaks: a 2xn array with the first column being position and the second\ncolumn being a peak assignment.",
+    "crumbs": [
+      "Home",
+      "Peak Calling",
+      "`hmm_peaks`"
+    ]
+  },
+  {
+    "objectID": "reference/bowtie_to_peak.html",
+    "href": "reference/bowtie_to_peak.html",
+    "title": "bowtie_to_peak",
+    "section": "",
+    "text": "end_to_end.bowtie_to_peak(bowtie_file, thresh=12, peak_file=None)\nConvert bowtie aligned file to peaks for 5r, 5f, 3r, and 3f.\n\n\n\n\n\nType\nDescription\n\n\n\n\n-peaks: str path to the location of the peaks file.",
+    "crumbs": [
+      "Home",
+      "End-to-End pipelining",
+      "`bowtie_to_peak`"
+    ]
+  },
+  {
+    "objectID": "reference/bowtie_to_peak.html#returns",
+    "href": "reference/bowtie_to_peak.html#returns",
+    "title": "bowtie_to_peak",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\n-peaks: str path to the location of the peaks file.",
+    "crumbs": [
+      "Home",
+      "End-to-End pipelining",
+      "`bowtie_to_peak`"
+    ]
+  },
+  {
+    "objectID": "reference/bowtie_to_peak_remove_shadows.html",
+    "href": "reference/bowtie_to_peak_remove_shadows.html",
+    "title": "bowtie_to_peak_remove_shadows",
+    "section": "",
+    "text": "end_to_end.bowtie_to_peak_remove_shadows(bowtie_file, thresh=12)\nConvert bowtie aligned file to peaks after shadow removal.\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\n-peaks: str path to the location of the peaks file (called\nafter shadow removal).",
+    "crumbs": [
+      "Home",
+      "End-to-End pipelining",
+      "`bowtie_to_peak_remove_shadows`"
+    ]
+  },
+  {
+    "objectID": "reference/bowtie_to_peak_remove_shadows.html#returns",
+    "href": "reference/bowtie_to_peak_remove_shadows.html#returns",
+    "title": "bowtie_to_peak_remove_shadows",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\n-peaks: str path to the location of the peaks file (called\nafter shadow removal).",
+    "crumbs": [
+      "Home",
+      "End-to-End pipelining",
+      "`bowtie_to_peak_remove_shadows`"
+    ]
+  },
+  {
+    "objectID": "reference/index.html",
+    "href": "reference/index.html",
+    "title": "Function reference",
+    "section": "",
+    "text": "Functions to go from alignment to peaks\n\n\n\nbowtie_to_peak\nConvert bowtie aligned file to peaks for 5r, 5f, 3r, and 3f.\n\n\nbowtie_to_peak_remove_shadows\nConvert bowtie aligned file to peaks after shadow removal.\n\n\n\n\n\n\nFunctions to call peaks from Rend-seq data.\n\n\n\nhmm_peaks\nFit peaks to the provided z_scores data set using the vertibi algorithm.\n\n\nthresh_peaks\nFind peaks by calling z-scores above a threshold as a peak."
+  },
+  {
+    "objectID": "reference/index.html#end-to-end-pipelining",
+    "href": "reference/index.html#end-to-end-pipelining",
+    "title": "Function reference",
+    "section": "",
+    "text": "Functions to go from alignment to peaks\n\n\n\nbowtie_to_peak\nConvert bowtie aligned file to peaks for 5r, 5f, 3r, and 3f.\n\n\nbowtie_to_peak_remove_shadows\nConvert bowtie aligned file to peaks after shadow removal."
+  },
+  {
+    "objectID": "reference/index.html#peak-calling",
+    "href": "reference/index.html#peak-calling",
+    "title": "Function reference",
+    "section": "",
+    "text": "Functions to call peaks from Rend-seq data.\n\n\n\nhmm_peaks\nFit peaks to the provided z_scores data set using the vertibi algorithm.\n\n\nthresh_peaks\nFind peaks by calling z-scores above a threshold as a peak."
+  }
+]
