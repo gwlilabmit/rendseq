@@ -89,15 +89,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.qmd"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="../about.qmd"> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../algorithm.qmd"> 
+    <a class="nav-link" href="../algorithm.html"> 
 <span class="menu-text">Peak-Calling Algorithm</span></a>
   </li>  
   <li class="nav-item">
@@ -185,6 +185,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#rendseq.make_peaks.hmm_peaks" id="toc-rendseq.make_peaks.hmm_peaks" class="nav-link active" data-scroll-target="#rendseq.make_peaks.hmm_peaks">hmm_peaks</a>
   <ul class="collapse">
+  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
   </ul></li>
   </ul>
@@ -200,12 +201,63 @@ ul.task-list li input[type="checkbox"] {
 <h1>hmm_peaks</h1>
 <p><code>make_peaks.hmm_peaks(z_scores, i_to_p=1 / 1000, p_to_p=1 / 1.5, peak_center=10, spread=2)</code></p>
 <p>Fit peaks to the provided z_scores data set using the vertibi algorithm.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="table">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 88%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>z_scores</code></td>
+<td></td>
+<td>(2xn array) required: first column is position (ie bp location) second column is a modified z_score for that position.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>i_to_p</code></td>
+<td></td>
+<td>(float) value should be between zero and 1, represents probability of transitioning from inernal state to peak state. The default value is 1/2000, based on asseumption of geometrically distributed transcript lengths with mean length 1000. Should be a robust parameter.</td>
+<td><code>1 / 1000</code></td>
+</tr>
+<tr class="odd">
+<td><code>p_to_p</code></td>
+<td></td>
+<td>(float) The probability of a peak to peak transition. Default 1/1.5.</td>
+<td><code>1 / 1.5</code></td>
+</tr>
+<tr class="even">
+<td><code>peak_center</code></td>
+<td></td>
+<td>(float) the mean of the emission probability distribution for the peak state.</td>
+<td><code>10</code></td>
+</tr>
+<tr class="odd">
+<td><code>spread</code></td>
+<td></td>
+<td>(float) the standard deviation of the peak emmission distribution.</td>
+<td><code>2</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="returns" class="level2">
 <h2 class="anchored" data-anchor-id="returns">Returns</h2>
 <table class="table">
 <colgroup>
-<col style="width: 68%">
-<col style="width: 31%">
+<col style="width: 7%">
+<col style="width: 92%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -215,8 +267,8 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td>-peaks: a 2xn array with the first column being position and the second</td>
-<td>column being a peak assignment.</td>
+<td>peaks:</td>
+<td>(2xn array) with the first column being position and the second column being a peak assignment.</td>
 </tr>
 </tbody>
 </table>

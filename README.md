@@ -8,7 +8,7 @@ data analysis dreams!</h4>
 <div align="center">
   <!-- badges: start -->
   <div id="banner" style="overflow: hidden;justify-content:space-around;">
-  <a href="https://rendseq.readthedocs.io/en/latest/">
+  <a href="https://gwlilabmit.github.io/rendseq/">
   <img src="https://img.shields.io/badge/ReadTheDocs-blue"
     alt="Documentation Link"></img>
   </a>
@@ -27,6 +27,7 @@ data analysis dreams!</h4>
     <a href="#overview">Overview</a> •
     <a href="#installation">Installation</a> •
     <a href="#contribute">Contribute</a>
+    a href="#our_documentation">Documentation</a>
   </p>
 </div>
   <!-- badges: end -->
@@ -52,3 +53,23 @@ We also have example notebooks which can be accessed in the ["example notebooks"
 We welcome collaborators on this project!  To get started check out our instructions for how to get started as a contributor.
 
 You can also direct all correspondence about this project to our dedicated mailing list: <mark >rendseq *at* mit *dot* edu</mark>
+
+# Our Documentation
+
+Documentation which explains how this package works and also all the included functions, with example code can be found at our [Github Pages site](https://gwlilabmit.github.io/rendseq/)
+
+Our docs are made with [Quarto](https://quarto.org/) and hosted on Github Pages.
+
+In order to update the docs yourself this is what you need to do:
+
+- Install [Quarto](https://quarto.org/docs/get-started/).
+- Install [quartodocs](https://machow.github.io/quartodoc/get-started/overview.html).
+- Run `quartodoc build` in the docs folder.
+- Run `quarto render` in the docs folder.
+
+
+To add new functions so that they are rendered and included in the docs - add them to the `quartodoc` section in the `_quarto.yml` file. The docstrings will then be added and processed automatically.
+
+Github pages then treats the `docs\` folder as the source for the Github Pages website.
+
+Hopefully the above ^ will be integrated into a Github action soon, but in the meantime this should work fine.

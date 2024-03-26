@@ -4,8 +4,14 @@
 
 Convert bowtie aligned file to peaks after shadow removal.
 
+## Parameters
+
+| Name          | Type   | Description   | Default    |
+|---------------|--------|---------------|------------|
+| `bowtie_file` |        |               | _required_ |
+
 ## Returns
 
-| Type                                                       | Description            |
-|------------------------------------------------------------|------------------------|
-| -peaks: str path to the location of the peaks file (called | after shadow removal). |
+| Type                                               | Description            |
+|----------------------------------------------------|------------------------|
+| str path to the location of the peaks file (called | after shadow removal). |

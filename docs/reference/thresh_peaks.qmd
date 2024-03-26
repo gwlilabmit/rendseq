@@ -3,3 +3,11 @@
 `make_peaks.thresh_peaks(z_scores, thresh=None, method='kink')`
 
 Find peaks by calling z-scores above a threshold as a peak.
+
+## Parameters
+
+| Name       | Type   | Description                                                                                                                                     | Default    |
+|------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| `z_scores` |        | (2xn array) of nt positions and zscores at that pos.                                                                                            | _required_ |
+| `thresh`   |        | (float) the threshold value to use.  If none is provided it will be automatically calculated.                                                   | `None`     |
+| `method`   |        | (str, options: ["kink"]) the method to use to automatically calculate the z score threshold if no thresh is provided.  Default method is "kink" | `'kink'`   |
