@@ -1,0 +1,19 @@
+# Function reference {.doc .doc-index}
+
+## End to End pipelining
+
+Functions to go from alignment to peaks
+
+| | |
+| --- | --- |
+| [bowtie_to_peak](bowtie_to_peak.qmd#rendseq.end_to_end.bowtie_to_peak) | Convert bowtie aligned file to peaks for 5r, 5f, 3r, and 3f. |
+| [bowtie_to_peak_remove_shadows](bowtie_to_peak_remove_shadows.qmd#rendseq.end_to_end.bowtie_to_peak_remove_shadows) | Convert bowtie aligned file to peaks after shadow removal. |
+
+## Peak Calling
+
+Functions to call peaks from Rend-seq data.
+
+| | |
+| --- | --- |
+| [hmm_peaks](hmm_peaks.qmd#rendseq.make_peaks.hmm_peaks) | Fit peaks to the provided z_scores data set using the vertibi algorithm. |
+| [thresh_peaks](thresh_peaks.qmd#rendseq.make_peaks.thresh_peaks) | Find peaks by calling z-scores above a threshold as a peak. |

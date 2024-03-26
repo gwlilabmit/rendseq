@@ -1,7 +1,6 @@
 project:
   type: website
-  output-dir: .
-
+  output-dir: github_site
 
 website:
   title: "rendseq"
@@ -9,8 +8,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: about.qmd
-        text: About
+      - about.qmd
       - href: algorithm.qmd
         text: Peak-Calling Algorithm
       - href: reference/index.qmd
@@ -55,5 +53,6 @@ quartodoc:
       contents:
         - hmm_peaks
         - thresh_peaks
+
 
 
