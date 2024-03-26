@@ -1,6 +1,7 @@
 project:
   type: website
-  output-dir: ..\docs
+  output-dir: .
+
 
 
 website:
@@ -9,7 +10,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
       - href: algorithm.qmd
         text: Peak-Calling Algorithm
       - href: reference/index.qmd
@@ -54,6 +56,5 @@ quartodoc:
       contents:
         - hmm_peaks
         - thresh_peaks
-
 
 

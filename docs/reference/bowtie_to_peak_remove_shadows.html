@@ -89,15 +89,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.qmd"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="../about.qmd"> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../algorithm.qmd"> 
+    <a class="nav-link" href="../algorithm.html"> 
 <span class="menu-text">Peak-Calling Algorithm</span></a>
   </li>  
   <li class="nav-item">
@@ -185,6 +185,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#rendseq.end_to_end.bowtie_to_peak_remove_shadows" id="toc-rendseq.end_to_end.bowtie_to_peak_remove_shadows" class="nav-link active" data-scroll-target="#rendseq.end_to_end.bowtie_to_peak_remove_shadows">bowtie_to_peak_remove_shadows</a>
   <ul class="collapse">
+  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
   </ul></li>
   </ul>
@@ -200,12 +201,33 @@ ul.task-list li input[type="checkbox"] {
 <h1>bowtie_to_peak_remove_shadows</h1>
 <p><code>end_to_end.bowtie_to_peak_remove_shadows(bowtie_file, thresh=12)</code></p>
 <p>Convert bowtie aligned file to peaks after shadow removal.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bowtie_file</code></td>
+<td></td>
+<td></td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="returns" class="level2">
 <h2 class="anchored" data-anchor-id="returns">Returns</h2>
 <table class="table">
 <colgroup>
-<col style="width: 71%">
-<col style="width: 28%">
+<col style="width: 68%">
+<col style="width: 31%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -215,7 +237,7 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td>-peaks: str path to the location of the peaks file (called</td>
+<td>str path to the location of the peaks file (called</td>
 <td>after shadow removal).</td>
 </tr>
 </tbody>

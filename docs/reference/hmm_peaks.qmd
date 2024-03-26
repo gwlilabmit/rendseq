@@ -4,8 +4,18 @@
 
 Fit peaks to the provided z_scores data set using the vertibi algorithm.
 
+## Parameters
+
+| Name          | Type   | Description                                                                                                                                                                                                                                                                  | Default    |
+|---------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| `z_scores`    |        | (2xn array) required: first column is position (ie bp location) second column is a modified z_score for that position.                                                                                                                                                       | _required_ |
+| `i_to_p`      |        | (float) value should be between zero and 1, represents probability of transitioning from inernal state to peak state. The default value is 1/2000, based on asseumption of geometrically distributed transcript lengths with mean length 1000. Should be a robust parameter. | `1 / 1000` |
+| `p_to_p`      |        | (float) The probability of a peak to peak transition.  Default 1/1.5.                                                                                                                                                                                                        | `1 / 1.5`  |
+| `peak_center` |        | (float) the mean of the emission probability distribution for the peak state.                                                                                                                                                                                                | `10`       |
+| `spread`      |        | (float) the standard deviation of the peak emmission distribution.                                                                                                                                                                                                           | `2`        |
+
 ## Returns
 
-| Type                                                                    | Description                     |
-|-------------------------------------------------------------------------|---------------------------------|
-| -peaks: a 2xn array with the first column being position and the second | column being a peak assignment. |
+| Type   | Description                                                                                     |
+|--------|-------------------------------------------------------------------------------------------------|
+| peaks: | (2xn array) with the first column being position and the second column being a peak assignment. |

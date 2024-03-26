@@ -89,15 +89,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.qmd"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="../about.qmd"> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../algorithm.qmd"> 
+    <a class="nav-link" href="../algorithm.html"> 
 <span class="menu-text">Peak-Calling Algorithm</span></a>
   </li>  
   <li class="nav-item">
@@ -183,7 +183,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#rendseq.make_peaks.thresh_peaks" id="toc-rendseq.make_peaks.thresh_peaks" class="nav-link active" data-scroll-target="#rendseq.make_peaks.thresh_peaks">thresh_peaks</a></li>
+  <li><a href="#rendseq.make_peaks.thresh_peaks" id="toc-rendseq.make_peaks.thresh_peaks" class="nav-link active" data-scroll-target="#rendseq.make_peaks.thresh_peaks">thresh_peaks</a>
+  <ul class="collapse">
+  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -197,9 +200,49 @@ ul.task-list li input[type="checkbox"] {
 <h1>thresh_peaks</h1>
 <p><code>make_peaks.thresh_peaks(z_scores, thresh=None, method='kink')</code></p>
 <p>Find peaks by calling z-scores above a threshold as a peak.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 81%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>z_scores</code></td>
+<td></td>
+<td>(2xn array) of nt positions and zscores at that pos.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>thresh</code></td>
+<td></td>
+<td>(float) the threshold value to use. If none is provided it will be automatically calculated.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>method</code></td>
+<td></td>
+<td>(str, options: [“kink”]) the method to use to automatically calculate the z score threshold if no thresh is provided. Default method is “kink”</td>
+<td><code>'kink'</code></td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
+</section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -1,7 +1,43 @@
 ---
 title: "About"
+format: html
 ---
 
-rendseq is an open source python package developed by the Li Lab at MIT.  [Visit our lab website](https://www.genesgroup.org/) to learn more about what we are up to!
+# Overview
+- `rendseq` is a python package meant to facilitate analysis of end-enriched RNA sequencing data (Rend-Seq).
+- To learn more about Rend-Seq - eg what it is, what types of questions it can help you solve and how you can generate your own RendSeq data set please visit the [Li lab website](http://gwli.scripts.mit.edu/group/), or check out the [Li Lab's 2018 Cell Paper](http://gwli.scripts.mit.edu/group/wp-content/uploads/2019/01/Lalanne_Cell2018.pdf) by Lalanne et al.
+- We have created an interactive website for viewing Rend-seq data from our lab: [rendseq.org](https://rendseq.org/).
+- To learn more about the `rendseq` package read these docs! ;)
 
-Rend-seq data is a type of RNA-sequencing data that can aid in the identification of transcript boundaries by enriching for transcript ends.  We have created an interactive website for viewing Rend-seq data: [rendseq.org](https://rendseq.org/).
+
+# Installation
+
+Our package is available on pip.  To get started - install our package via pip:
+
+  `pip install rendseq`
+
+Or to get the latest version download and install from our Github:
+
+Clone via SSH (recommended):
+
+  `git clone git@github.com:gwlilabmit/rendseq.git`
+
+or by https:
+
+  `git clone https://github.com/gwlilabmit/rendseq.git`
+
+Then `cd` into the cloped repo and isntall via pip, either as a regular install:
+
+  `pip install .`\
+
+Or if you plan to develop the package as an editable install:
+
+  `pip install -e .`
+
+
+# Contribute
+
+We welcome collaborators on this project!  To get started check out our instructions for how to get started as a contributor.
+
+You can also direct all correspondence about this project to our dedicated mailing list: <mark >rendseq *at* mit *dot* edu</mark>
+

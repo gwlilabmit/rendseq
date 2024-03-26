@@ -84,23 +84,28 @@ def hmm_peaks(z_scores, i_to_p=1 / 1000, p_to_p=1 / 1.5, peak_center=10, spread=
 
     Parameters
     ----------
-        -z_scores (2xn array): - required: first column is position (ie bp
-            location) second column is a modified z_score for that position.
-        -i_to_p (float): value should be between zero and 1, represents
-            probability of transitioning from inernal state to peak state. The
-            default value is 1/2000, based on asseumption of geometrically
-            distributed transcript lengths with mean length 1000. Should be a
-            robust parameter.
-        -p_to_p (float): The probability of a peak to peak transition.  Default
-            1/1.5.
-        -peak_center (float): the mean of the emission probability distribution
-            for the peak state.
-        -spread (float): the standard deviation of the peak emmission
-            distribution.
-
+    z_scores:
+        (2xn array) required: first column is position (ie bp
+        location) second column is a modified z_score for that position.
+    i_to_p:
+        (float) value should be between zero and 1, represents
+        probability of transitioning from inernal state to peak state. The
+        default value is 1/2000, based on asseumption of geometrically
+        distributed transcript lengths with mean length 1000. Should be a
+        robust parameter.
+    p_to_p:
+        (float) The probability of a peak to peak transition.  Default
+        1/1.5.
+    peak_center:
+        (float) the mean of the emission probability distribution
+        for the peak state.
+    spread:
+            (float) the standard deviation of the peak emmission
+        distribution.
     Returns
     -------
-        -peaks: a 2xn array with the first column being position and the second
+        peaks:
+            (2xn array) with the first column being position and the second
             column being a peak assignment.
     """
     print("Finding Peaks")
@@ -200,11 +205,14 @@ def thresh_peaks(z_scores, thresh=None, method="kink"):
 
     Parameters
     ----------
-        - z_scores - a 2xn array of nt positions and zscores at that pos.
-        - thresh - the threshold value to use.  If none is provided it will be
-            automatically calculated.
-        - method - the method to use to automatically calculate the z score
-            if none is provided.  Default method is "kink"
+    z_scores:
+        (2xn array) of nt positions and zscores at that pos.
+    thresh:
+        (float) the threshold value to use.  If none is provided it will be
+        automatically calculated.
+    method:
+        (str, options: ["kink"]) the method to use to automatically calculate
+        the z score threshold if no thresh is provided.  Default method is "kink"
     """
     if thresh is None:
         thresh = _calc_thresh(z_scores, method)
