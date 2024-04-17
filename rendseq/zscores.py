@@ -15,7 +15,7 @@ from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wi
 def _add_padding(reads, gap, w_sz):
     """Add gaussian padding to the parts of the original array missing values."""
     start = int(reads[0, 0] - gap - w_sz)
-    stop = int(reads[-1, 0] + gap + w_sz)
+    stop = int(reads[-1, 0] + gap + w_sz + 1)
     padded_reads = np.zeros([stop - start, 2])
     padded_reads[:, 0] = list(range(start, stop))
     padded_reads[:, 1] = np.random.normal(0, 1, stop - start)
