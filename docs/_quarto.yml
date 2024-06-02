@@ -16,6 +16,8 @@ website:
         text: Peak-Calling Algorithm
       - href: reference/index.qmd
         text: Function References
+      - href: 01-Basic-Rendseq-Intro.ipynb
+        text: Intro to Rendseq
   sidebar:
     style: "floating"
     collapse-level: 1
