@@ -20,7 +20,8 @@ website:
         text: Intro to Rendseq
   sidebar:
     style: "floating"
-    collapse-level: 1
+    title: rendseq Function Documentation
+    collapse-level: 2
     contents:
       - section: End-to-End pipelining
         contents:

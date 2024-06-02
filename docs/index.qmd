@@ -38,4 +38,4 @@ Or if you plan to develop the package as an editable install:
 
 We welcome collaborators on this project!  To get started check out our instructions for how to get started as a contributor.
 
-You can also direct all correspondence about this project to our dedicated mailing list: <mark >rendseq *at* mit *dot* edu</mark>
+You can also direct all correspondence about this project to our dedicated mailing list: <mark >rendseq *at* mit *dot* edu</mark> or reach out to the Li lab.

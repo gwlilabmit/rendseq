@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar floating nav-fixed">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -151,73 +151,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Basic Rendseq Usage</li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-    </div>
-  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
- <span class="menu-text">End-to-End pipelining</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference/bowtie_to_peak.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><code>bowtie_to_peak</code></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference/bowtie_to_peak_remove_shadows.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><code>bowtie_to_peak_remove_shadows</code></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
- <span class="menu-text">Peak Calling</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference/hmm_peaks.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><code>hmm_peaks</code></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference/thresh_peaks.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><code>thresh_peaks</code></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-    </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -257,9 +194,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-0---misc-installs" class="level3">
 <h3 class="anchored" data-anchor-id="step-0---misc-installs">Step 0 - Misc Installs</h3>
 <p>For all the <code>rendseq</code> related functionality - we will install it bit by bit below so it is easier to see what functionality comes from what part of the package. This section is just to import other useful libraries for this demo:</p>
-<div id="cell-3" class="cell" data-execution_count="1">
+<div id="cell-3" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> igv_notebook</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>igv_notebook.init()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>igv_notebook.init()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>igv_browser<span class="op">=</span> igv_notebook.Browser(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"reference"</span>:{</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"id"</span>: <span class="st">"NC_000964.3"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"B. subtilus (NC_000964.3)"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"fastaURL"</span>: <span class="st">"https://storage.googleapis.com/rendseq_genomes/NC_000964.3.fasta"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"indexURL"</span>: <span class="st">""</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"locus"</span> : <span class="st">"NC_000964.3:1,930,147-2,285,461"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tracks"</span>: [</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"Genes"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"annotation"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"format"</span>: <span class="st">"gff3"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"url"</span>: <span class="st">"https://storage.googleapis.com/rendseq_genomes/NC_000964.3_B_subtilis_168_genes.gff3"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        }]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/javascript">
 window.igv=(function(){"use strict";
@@ -913,49 +869,30 @@ function(e){var t,i,n,r,s,o,a,l,h,c,d,u,f,p,g,m,b,w,v,y="sizzle"+1*new Date,_=e.
 })()
 </script>
 </div>
+<div class="cell-output cell-output-display">
+<div id="jb_3994527"></div>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+window.igv.MessageHandler.on({"id": "jb_3994527", "command": "createBrowser", "data": {"reference": {"id": "NC_000964.3", "name": "B. subtilus (NC_000964.3)", "fastaURL": "https://storage.googleapis.com/rendseq_genomes/NC_000964.3.fasta", "indexURL": ""}, "locus": "NC_000964.3:1,930,147-2,285,461", "tracks": [{"name": "Genes", "type": "annotation", "format": "gff3", "url": "https://storage.googleapis.com/rendseq_genomes/NC_000964.3_B_subtilis_168_genes.gff3"}], "id": "jb_3994527"}})
+</script>
+</div>
 </div>
 </section>
 <section id="step-1---load-data" class="level3">
 <h3 class="anchored" data-anchor-id="step-1---load-data">Step 1 - Load data</h3>
 <p>In <code>rendseq.file_funcs</code> we have some functions for opening/creating relevant files. We will use that to extract our raw reads from the wig files in <code>Example Data</code>. Wig files are files with read count-density as a function of nucleotide density. These files are generated from Rend-seq data by recording the 5’-mapping and 3’-mapping read density into two files. In total this means a single Rend-seq experiment gives rise to 4 wig files: the 3’ and 5’ mapping reads for both the forward and reverse strands. The different direction strands and ends can be dealt with seperately - in this tutorial we will focus on the forward strand 5’-end mapping reads.</p>
-<div id="cell-5" class="cell" data-execution_count="8">
+<div id="cell-5" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rendseq.file_funcs <span class="im">import</span> open_wig</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>example_wig <span class="op">=</span> <span class="st">'../Example_Data/example_wig_Jean_5f_subset.wig'</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>reads, chrom <span class="op">=</span> open_wig(example_wig)  <span class="co"># chrom information will be used when we save either our z-scores or peaks as wig files again and for the IGV browser:</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>igv_browser<span class="op">=</span> igv_notebook.Browser(</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"reference"</span>:</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"id"</span>: chrom,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"B. subtilus (NC_000964.3)"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"fastaURL"</span>: <span class="st">"https://storage.googleapis.com/rendseq_genomes/NC_000964.3.fasta"</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        },</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"locus"</span> : <span class="ss">f"</span><span class="sc">{</span>chrom<span class="sc">}</span><span class="ss">:1,930,147-2,285,461"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tracks"</span>: [</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"Genes"</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"annotation"</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"format"</span>: <span class="st">"gff3"</span>,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"url"</span>: <span class="st">"https://storage.googleapis.com/rendseq_genomes/NC_000964.3_B_subtilis_168_genes.gff3"</span>,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        }]</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="jb_4228786"></div>
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/javascript">
-window.igv.MessageHandler.on({"id": "jb_4228786", "command": "createBrowser", "data": {"reference": [{"id": "NC_000964.3", "name": "B. subtilus (NC_000964.3)", "fastaURL": "https://storage.googleapis.com/rendseq_genomes/NC_000964.3.fasta"}], "tracks": [{"name": "Genes", "type": "annotation", "format": "gff3", "url": "https://storage.googleapis.com/rendseq_genomes/NC_000964.3_B_subtilis_168_genes.gff3"}], "id": "jb_4228786"}})
-</script>
-</div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>reads, chrom <span class="op">=</span> open_wig(example_wig)  <span class="co"># chrom information will be used when we save either our z-scores or peaks as wig files again and for the IGV browser:</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="step-2---transform-the-raw-data" class="level3">
 <h3 class="anchored" data-anchor-id="step-2---transform-the-raw-data">Step 2 - Transform the raw data</h3>
 <p>Our peak finding algorithms require that the raw data is transformed using our modified z-score transformation first. (Visit <a href="https://gwlilabmit.github.io/rendseq/algorithm.html">our algorithm page</a> to learn more about our modified z score). The function we use to do this is in <code>rendseq.zscores</code>.</p>
-<div id="cell-7" class="cell">
+<div id="cell-7" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rendseq.zscores <span class="im">import</span> z_scores</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>z_score_transformed_data <span class="op">=</span> z_scores(reads)  <span class="co"># if desired z_score_transformed_data can be saved as a wig file and can be loaded and viewed in igv or a similar browser.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -964,25 +901,20 @@ window.igv.MessageHandler.on({"id": "jb_4228786", "command": "createBrowser", "d
 <section id="step-3---fit-some-peaks-part-1" class="level3">
 <h3 class="anchored" data-anchor-id="step-3---fit-some-peaks-part-1">Step 3 - Fit some peaks! (Part 1)</h3>
 <p>Now that we have z_score transformed data, we can find our peaks. We will do this using two approaches - <code>thresh</code> - where all positions with a score above a threshold are called as peaks and <code>hmm_peaks</code> which will use a <a href="https://en.wikipedia.org/wiki/Hidden_Markov_model">Hidden Markov Model</a> to annotate our sequence with as peak/not peak. Lets start with the thresholded approach:</p>
-<div id="cell-9" class="cell">
+<div id="cell-9" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rendseq.make_peaks <span class="im">import</span> thresh_peaks</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>thresh_peaks_found <span class="op">=</span> thresh_peaks(z_score_transformed_data, thresh <span class="op">=</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-11" class="cell">
+<div id="cell-11" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rendseq.make_peaks <span class="im">import</span> hmm_peaks</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>hmm_peaks_found <span class="op">=</span> hmm_peaks(z_score_transformed_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Finding Peaks
+Calculating Transition Matrix
+Found 132 Peaks</code></pre>
 </div>
-<div id="cell-12" class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"Raw 5' Mapping Reads"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            <span class="st">"path"</span>: example_wig,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">"format"</span>: <span class="st">"wig"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"color"</span>: <span class="st">"orange"</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        }]</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
