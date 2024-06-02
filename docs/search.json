@@ -41,6 +41,7 @@
     "title": "hmm_peaks",
     "section": "",
     "text": "Name\nType\nDescription\nDefault\n\n\n\n\nz_scores\n\n(2xn array) required: first column is position (ie bp location) second column is a modified z_score for that position.\nrequired\n\n\ni_to_p\n\n(float) value should be between zero and 1, represents probability of transitioning from inernal state to peak state. The default value is 1/2000, based on asseumption of geometrically distributed transcript lengths with mean length 1000. Should be a robust parameter.\n1 / 1000\n\n\np_to_p\n\n(float) The probability of a peak to peak transition. Default 1/1.5.\n1 / 1.5\n\n\npeak_center\n\n(float) the mean of the emission probability distribution for the peak state.\n10\n\n\nspread\n\n(float) the standard deviation of the peak emmission distribution.\n2",
+
     "crumbs": [
       "Home",
       "Peak Calling",
