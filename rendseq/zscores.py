@@ -15,7 +15,7 @@ from rendseq.file_funcs import _validate_reads, make_new_dir, open_wig, write_wi
 def _add_padding(reads, gap, w_sz):
     """Add gaussian padding to the parts of the original array missing values."""
     start = int(reads[0, 0] - gap - w_sz)
-    stop = int(reads[-1, 0] + gap + w_sz)
+    stop = int(reads[-1, 0] + gap + w_sz + 1)
     padded_reads = np.zeros([stop - start, 2])
     padded_reads[:, 0] = list(range(start, stop))
     padded_reads[:, 1] = np.random.normal(0, 1, stop - start)
@@ -90,17 +90,17 @@ def z_scores(reads, gap=5, w_sz=50, percent_trim=0, winsorize=True):
     means, sds = _get_means_sds(padded_reads, w_sz, percent_trim, winsorize)
     upper_zscores = np.divide(
         np.subtract(
-            padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
-            means[(gap + w_sz) : len(means) - 1 - gap],
+            padded_reads[gap + w_sz : -(gap + w_sz), 1],
+            means[(2*gap + w_sz + 1) : ],
         ),
-        sds[(gap + w_sz) : len(means) - 1 - gap],
+        sds[(2*gap + w_sz + 1) : ],
     )
     lower_zscores = np.divide(
         np.subtract(
-            padded_reads[gap + w_sz : pad_len - (gap + w_sz), 1],
-            means[gap : len(means) - 1 - (gap + w_sz)],
+            padded_reads[gap + w_sz : - (gap + w_sz), 1],
+            means[: - (w_sz + 2*gap + 1)],
         ),
-        sds[gap : len(means) - 1 - (gap + w_sz)],
+        sds [: - (w_sz + 2*gap + 1)],
     )
     zscores = padded_reads[gap + w_sz : pad_len - (gap + w_sz)].copy()
     zscores[:, 1] = np.min([lower_zscores, upper_zscores], axis=0)
